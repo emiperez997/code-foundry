@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<p align="center">
+  <img 
+    src="./docs/cover.png"
+    alt="CodeFoundry - Learn by building real projects"
+    height="auto"
+    width="100%" 
+    />
+</p>
 
-## Getting Started
+CodeFoundry es una plataforma educativa orientada a desarrolladores que buscan aprender
+programación y desarrollo de sistemas a través de proyectos reales.
 
-First, run the development server:
+El foco del producto es:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Aprender a levantar requerimientos
+- Tomar decisiones técnicas informadas
+- Diseñar soluciones reales
+- Implementar, refactorizar y mejorar sistemas
+- Usar IA como acompañante técnico (mentor) y no como reemplazo
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Filosofía
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Menos teoría aislada, más práctica contextual
+- No existe una única solución correcta
+- La experiencia simula trabajo real en equipos de desarrollo
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Público objetivo
 
-## Learn More
+- Estudiantes de programación
+- Developers junior / semi-senior
+- Personas que quieren practicar escenarios reales
 
-To learn more about Next.js, take a look at the following resources:
+<br />
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Funcionalidades core (MVP)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 👤 Autenticación
 
-## Deploy on Vercel
+- Login
+- Registro
+- Logout
+- Sesión persistente
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 📚 Cursos
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Listado de cursos
+- Página de detalle de curso
+- Cada curso tiene:
+  - Título
+  - Descripción
+  - Dificultad
+  - Categoría
+  - Lista de videos
+
+### 🎥 Videos
+
+- Embed (YouTube / Vimeo)
+- Marcar como “visto”
+- Progreso del curso (opcional)
+
+### ⭐ UX importante
+
+- Estado vacío (sin cursos)
+- Curso bloqueado / desbloqueado (fake)
+- Loading states
+- Error states
+
+### MVP (ideal para terminarlo)
+
+- ✔ Login
+- ✔ Lista de cursos
+- ✔ Detalle con videos
+- ✔ Progreso simple
+- ✔ Un Design System
+
+<br />
+
+# Roadmap sugerido (muy práctico)
+
+### Fase 1 – Base técnica
+
+- Setup Next.js
+- Auth
+- DB
+- Seed de cursos
+
+### Fase 2 – Producto
+
+- UI base con 1 Design System
+- Flujo completo
+- Estados
+
+### Fase 3 – IA intensiva
+
+- Refactor con IA
+- Review automático
+- Copy UX
+
+### Fase 4 – Comparativa
+
+- Reimplementar UI con otro Design System
+- Documentar diferencias
