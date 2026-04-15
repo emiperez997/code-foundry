@@ -1,24 +1,29 @@
 # CodeFoundry
 
-CodeFoundry es una plataforma educativa orientada a desarrolladores que buscan aprender
-programación y desarrollo de sistemas a través de proyectos reales.
+CodeFoundry is an educational platform aimed at developers who want to learn
+programming and systems development through real-world projects.
 
-El foco del producto es:
+The product focus is:
 
-- Aprender a levantar requerimientos
-- Tomar decisiones técnicas informadas
-- Diseñar soluciones reales
-- Implementar, refactorizar y mejorar sistemas
-- Usar IA como acompañante técnico (mentor) y no como reemplazo
+- Learning to gather requirements
+- Making informed technical decisions
+- Designing real solutions
+- Implementing, refactoring, and improving systems
+- Using AI as a technical companion (mentor), not a replacement
 
-## Filosofía
+## Philosophy
 
-- Menos teoría aislada, más práctica contextual
-- No existe una única solución correcta
-- La experiencia simula trabajo real en equipos de desarrollo
+- Less isolated theory, more contextual practice
+- There is no single correct solution
+- The experience simulates real work in development teams
 
-## Público objetivo
+## Target audience
 
-- Estudiantes de programación
-- Developers junior / semi-senior
-- Personas que quieren practicar escenarios reales
+- Programming students
+- Junior / semi-senior developers
+- People who want to practice real-world scenarios
+
+## Language
+
+All core content (courses, documentation, domain concepts) is written in English
+to ensure global accessibility and future scalability.
