@@ -40,4 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Opencode
+# PostgreSQL data directory
+/postgres_data
+
+/app/generated/prisma

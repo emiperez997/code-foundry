@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime   @default(now())
+  progress     Progress[]
+
+  @@map("users")
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  summary     String
+  level       String
+  isPublished Boolean  @default(false)
+  modules     Module[]
+
+  @@map("courses")
+}
+
+model Module {
+  id          String     @id @default(uuid())
+  courseId    String
+  title       String
+  order       Int
+  description String
+  course      Course     @relation(fields: [courseId], references: [id])
+  progress    Progress[]
+
+  @@unique([courseId, order])
+  @@map("modules")
+}
+
+model Progress {
+  id          String   @id @default(uuid())
+  userId      String
+  moduleId    String
+  completedAt DateTime @default(now())
+  module      Module   @relation(fields: [moduleId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, moduleId])
+  @@map("progress")
+}
