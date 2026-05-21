@@ -1,19 +1,19 @@
 # CodeFoundry — Roadmap MVP
 
 ## Fase 1 — Setup base
-- [ ] Instalar y configurar shadcn/ui sobre Tailwind 4
-- [ ] Actualizar `layout.tsx`: metadata de CodeFoundry, fuentes, navbar básica
-- [ ] Reemplazar `app/page.tsx` con landing real (hero + listado de cursos)
+- [x] Instalar y configurar shadcn/ui sobre Tailwind 4
+- [x] Actualizar `layout.tsx`: metadata de CodeFoundry, fuentes, navbar básica
+- [x] Reemplazar `app/page.tsx` con landing real (hero + listado de cursos)
 
 ## Fase 2 — Catálogo y contenido
-- [ ] Ruta `/courses` — grid de CourseCards leyendo datos de Prisma (Server Component)
-- [ ] Ruta `/courses/[slug]` — detalle del curso con lista de módulos
-- [ ] Ruta `/courses/[slug]/modules/[order]` — vista del módulo (renderizado de Markdown)
+- [x] Ruta `/courses` — grid de CourseCards leyendo datos de Prisma (Server Component)
+- [x] Ruta `/courses/[slug]` — detalle del curso con lista de módulos
+- [x] Ruta `/courses/[slug]/modules/[order]` — vista del módulo (renderizado de Markdown)
 
 ## Fase 3 — Autenticación
-- [ ] Instalar Auth.js v5
-- [ ] Implementar register + login con credentials (passwordHash ya en schema)
-- [ ] Proteger rutas de módulos con middleware de sesión
+- [x] Instalar Auth.js v5
+- [x] Implementar register + login con credentials (passwordHash ya en schema)
+- [x] Proteger rutas de módulos con middleware de sesión
 
 ## Fase 4 — Tracking de progreso
 - [ ] Server Action: marcar módulo como completado (tabla `Progress`)
