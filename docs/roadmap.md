@@ -26,5 +26,48 @@
 
 ## Fase 5 — Calidad
 
-- [ ] Tests unitarios para `courseParser.ts` y Server Actions críticos
-- [ ] Tipos estrictos end-to-end (Prisma types → componentes)
+- [x] Tests unitarios para `courseParser.ts` y Server Actions críticos
+- [x] Tipos estrictos end-to-end (Prisma types → componentes)
+
+---
+
+## Roadmap de cierre MVP (Global)
+
+Este bloque agrupa el trabajo final para considerar el MVP como "release-ready".
+
+### Bloque A — Producto y experiencia de aprendizaje
+
+## Fase 6 — Inscripción y progreso real
+
+- [ ] Crear entidad `Enrollment` (`userId`, `courseId`, `enrolledAt`)
+- [ ] Definir regla de inscripción (explícita o automática al iniciar curso)
+- [ ] Ajustar Dashboard para mostrar cursos inscritos aunque no tengan `Progress`
+- [ ] Mantener compatibilidad con progreso por módulo (`Progress`)
+
+## Fase 7 — Flujo guiado y UX final
+
+- [ ] CTA inteligente en curso (`Empezar` / `Continuar` / `Completado`)
+- [ ] Navegación recomendada al siguiente módulo pendiente
+- [ ] Separar en Dashboard: "En progreso" vs "Completados"
+- [ ] Consolidar estados `loading`, `empty` y `error` en rutas clave
+
+### Bloque B — Calidad, entrega y documentación
+
+## Fase 8 — Validación de punta a punta
+
+- [ ] Agregar tests E2E del flujo crítico (auth → curso → progreso → dashboard)
+- [ ] Mantener unit tests + typecheck en verde en cada PR
+- [ ] Cubrir casos de regresión de tracking y navegación
+
+## Fase 9 — CI/CD mínimo y release checklist
+
+- [ ] Configurar GitHub Actions (`install`, `test`, `build`)
+- [ ] Validar variables de entorno requeridas al arranque
+- [ ] Ejecutar checklist de release (migraciones, seed, smoke test)
+
+## Fase 10 — Documentación y cierre
+
+- [ ] Actualizar `README.md` al estado real del proyecto
+- [ ] Documentar decisiones técnicas (Auth, Prisma, progreso, publicación)
+- [ ] Agregar sección de límites del MVP y siguientes pasos post-MVP
+- [ ] Cerrar roadmap con PR final de release
