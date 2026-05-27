@@ -16,6 +16,9 @@ A developer is tasked with building the backend API for a team task management a
 ## Target Level
 Junior / Mixed
 
+## Published
+true
+
 ## Prerequisites
 - Knows what an HTTP request and response look like
 - Has consumed an API from the client side at least once

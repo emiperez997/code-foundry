@@ -16,6 +16,9 @@ A junior developer joins a small startup and gets their first real task: add a l
 ## Target Level
 Junior / Mixed
 
+## Published
+true
+
 ## Prerequisites
 - Basic understanding of how HTTP requests and responses work
 - Has built at least a simple app with a backend, even if small

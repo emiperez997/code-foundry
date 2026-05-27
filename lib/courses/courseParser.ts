@@ -16,7 +16,20 @@ export interface ParsedCourse {
   title: string;
   summary: string;
   level: string;
+  isPublished: boolean;
   modules: ParsedModule[];
+}
+
+function parsePublished(value: string, filePath: string): boolean {
+  if (!value) return false;
+
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "true") return true;
+  if (normalized === "false") return false;
+
+  throw new Error(
+    `[courseParser] Invalid ## Published value in ${filePath}. Use true or false.`
+  );
 }
 
 /**
@@ -118,6 +131,11 @@ export function parseCourse(markdown: string, filePath: string): ParsedCourse {
     );
   }
 
+  const isPublished = parsePublished(
+    extractSection(markdown, "Published"),
+    filePath
+  );
+
   const modulesSection = extractSection(markdown, "Modules");
   if (!modulesSection) {
     throw new Error(
@@ -132,5 +150,5 @@ export function parseCourse(markdown: string, filePath: string): ParsedCourse {
     );
   }
 
-  return { slug, title, summary, level, modules };
+  return { slug, title, summary, level, isPublished, modules };
 }
