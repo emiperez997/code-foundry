@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { ArrowRight, BookOpen, Code2, Layers } from "lucide-react"
-import { loadCourses } from "@/lib/courses/courseLoader"
+import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -12,8 +12,12 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
-export default function HomePage() {
-  const courses = loadCourses()
+export default async function HomePage() {
+  const courses = await prisma.course.findMany({
+    where: { isPublished: true },
+    include: { _count: { select: { modules: true } } },
+    orderBy: { title: "asc" },
+  })
 
   return (
     <div className="flex flex-col">
@@ -109,7 +113,7 @@ export default function HomePage() {
                       {course.level}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
-                      {course.modules.length} módulos
+                      {course._count.modules} módulos
                     </span>
                   </div>
                   <CardTitle className="text-base leading-snug">
@@ -128,10 +132,10 @@ export default function HomePage() {
                     className="w-full justify-between"
                     asChild
                   >
-                    <Link href={`/courses/${course.slug}`}>
-                      Ver curso
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
+                  <Link href={`/courses/${course.slug}`}>
+                    Ver curso
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
                   </Button>
                 </CardFooter>
               </Card>

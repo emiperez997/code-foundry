@@ -16,6 +16,9 @@ A three-person dev team deploys manually, has no shared process for reviewing co
 ## Target Level
 Junior / Mixed
 
+## Published
+true
+
 ## Prerequisites
 - Uses Git for version control (commit, push, pull)
 - Has deployed an app at least once, even manually

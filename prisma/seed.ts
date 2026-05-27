@@ -36,12 +36,14 @@ async function main() {
         title: course.title,
         summary: course.summary,
         level: course.level,
+        isPublished: course.isPublished,
       },
       create: {
         slug: course.slug,
         title: course.title,
         summary: course.summary,
         level: course.level,
+        isPublished: course.isPublished,
       },
     });
 

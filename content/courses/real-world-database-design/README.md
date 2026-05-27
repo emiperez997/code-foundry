@@ -16,6 +16,9 @@ A developer needs to design the database for a project management app from scrat
 ## Target Level
 Junior / Mixed
 
+## Published
+true
+
 ## Prerequisites
 - Has written basic SQL queries (SELECT, INSERT, WHERE)
 - Knows what a table and a column are

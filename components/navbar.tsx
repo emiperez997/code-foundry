@@ -21,6 +21,9 @@ export async function Navbar() {
 
           {session?.user ? (
             <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
               <span className="hidden text-sm text-muted-foreground sm:inline">
                 {session.user.name}
               </span>

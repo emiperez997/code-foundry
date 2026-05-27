@@ -16,6 +16,9 @@ A developer built their first React app and it works — but the code is hard to
 ## Target Level
 Junior / Mixed
 
+## Published
+true
+
 ## Prerequisites
 - Can create React components and use useState
 - Has built at least one small React app

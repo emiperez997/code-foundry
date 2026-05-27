@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 
 export default async function CoursesPage() {
   const courses = await prisma.course.findMany({
+    where: { isPublished: true },
     include: { _count: { select: { modules: true } } },
     orderBy: { title: "asc" },
   })
