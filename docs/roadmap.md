@@ -61,9 +61,9 @@ Este bloque agrupa el trabajo final para considerar el MVP como "release-ready".
 
 ## Fase 9 — CI/CD mínimo y release checklist
 
-- [ ] Configurar GitHub Actions (`install`, `test`, `build`)
-- [ ] Validar variables de entorno requeridas al arranque
-- [ ] Ejecutar checklist de release (migraciones, seed, smoke test)
+- [x] Configurar GitHub Actions (`install`, `test`, `build`)
+- [x] Validar variables de entorno requeridas al arranque
+- [x] Ejecutar checklist de release (migraciones, seed, smoke test)
 
 ## Fase 10 — Documentación y cierre
 

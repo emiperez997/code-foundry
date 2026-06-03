@@ -2,11 +2,13 @@
   "name": "code-foundry",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.30.3",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "validate-env": "tsx scripts/validate-env.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
