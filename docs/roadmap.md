@@ -46,10 +46,10 @@ Este bloque agrupa el trabajo final para considerar el MVP como "release-ready".
 
 ## Fase 7 — Flujo guiado y UX final
 
-- [ ] CTA inteligente en curso (`Empezar` / `Continuar` / `Completado`)
-- [ ] Navegación recomendada al siguiente módulo pendiente
-- [ ] Separar en Dashboard: "En progreso" vs "Completados"
-- [ ] Consolidar estados `loading`, `empty` y `error` en rutas clave
+- [x] CTA inteligente en curso (`Empezar` / `Continuar` / `Completado`)
+- [x] Navegación recomendada al siguiente módulo pendiente
+- [x] Separar en Dashboard: "En progreso" vs "Completados"
+- [x] Consolidar estados `loading`, `empty` y `error` en rutas clave
 
 ### Bloque B — Calidad, entrega y documentación
 
