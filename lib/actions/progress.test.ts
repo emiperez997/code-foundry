@@ -4,7 +4,9 @@ const mocks = vi.hoisted(() => {
   return {
     auth: vi.fn(),
     revalidatePath: vi.fn(),
-    upsert: vi.fn(),
+    progressUpsert: vi.fn(),
+    enrollmentUpsert: vi.fn(),
+    moduleFindUnique: vi.fn(),
     deleteMany: vi.fn(),
   }
 })
@@ -19,8 +21,14 @@ vi.mock("next/cache", () => ({
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
+    enrollment: {
+      upsert: mocks.enrollmentUpsert,
+    },
+    module: {
+      findUnique: mocks.moduleFindUnique,
+    },
     progress: {
-      upsert: mocks.upsert,
+      upsert: mocks.progressUpsert,
       deleteMany: mocks.deleteMany,
     },
   },
@@ -46,7 +54,7 @@ describe("progress actions", () => {
     expect(result).toEqual({
       error: "Debes iniciar sesión para guardar progreso.",
     })
-    expect(mocks.upsert).not.toHaveBeenCalled()
+    expect(mocks.progressUpsert).not.toHaveBeenCalled()
   })
 
   it("returns error if module fields are missing when completing", async () => {
@@ -57,7 +65,23 @@ describe("progress actions", () => {
     const result = await markModuleCompleted({}, formData)
 
     expect(result).toEqual({ error: "No pudimos identificar el módulo." })
-    expect(mocks.upsert).not.toHaveBeenCalled()
+    expect(mocks.progressUpsert).not.toHaveBeenCalled()
+  })
+
+  it("returns error if module does not exist when completing", async () => {
+    mocks.auth.mockResolvedValueOnce({ user: { id: "u1" } })
+    mocks.moduleFindUnique.mockResolvedValueOnce(null)
+
+    const formData = new FormData()
+    formData.set("moduleId", "missing-module")
+    formData.set("slug", "course")
+    formData.set("order", "1")
+
+    const result = await markModuleCompleted({}, formData)
+
+    expect(result).toEqual({ error: "No pudimos identificar el módulo." })
+    expect(mocks.enrollmentUpsert).not.toHaveBeenCalled()
+    expect(mocks.progressUpsert).not.toHaveBeenCalled()
   })
 
   it("returns error if user is not logged in when setting pending", async () => {
@@ -89,6 +113,7 @@ describe("progress actions", () => {
 
   it("completes module and revalidates related paths", async () => {
     mocks.auth.mockResolvedValueOnce({ user: { id: "u1" } })
+    mocks.moduleFindUnique.mockResolvedValueOnce({ courseId: "c1" })
 
     const formData = new FormData()
     formData.set("moduleId", "m1")
@@ -98,8 +123,18 @@ describe("progress actions", () => {
     const result = await markModuleCompleted({}, formData)
 
     expect(result).toEqual({})
-    expect(mocks.upsert).toHaveBeenCalledTimes(1)
-    expect(mocks.upsert).toHaveBeenCalledWith({
+    expect(mocks.moduleFindUnique).toHaveBeenCalledWith({
+      where: { id: "m1" },
+      select: { courseId: true },
+    })
+    expect(mocks.enrollmentUpsert).toHaveBeenCalledTimes(1)
+    expect(mocks.enrollmentUpsert).toHaveBeenCalledWith({
+      where: { userId_courseId: { userId: "u1", courseId: "c1" } },
+      update: {},
+      create: { userId: "u1", courseId: "c1" },
+    })
+    expect(mocks.progressUpsert).toHaveBeenCalledTimes(1)
+    expect(mocks.progressUpsert).toHaveBeenCalledWith({
       where: { userId_moduleId: { userId: "u1", moduleId: "m1" } },
       update: { completedAt: expect.any(Date) },
       create: { userId: "u1", moduleId: "m1" },
@@ -126,6 +161,8 @@ describe("progress actions", () => {
     const result = await markModulePending({}, formData)
 
     expect(result).toEqual({})
+    expect(mocks.moduleFindUnique).not.toHaveBeenCalled()
+    expect(mocks.enrollmentUpsert).not.toHaveBeenCalled()
     expect(mocks.deleteMany).toHaveBeenCalledTimes(1)
     expect(mocks.deleteMany).toHaveBeenCalledWith({
       where: { userId: "u1", moduleId: "m1" },

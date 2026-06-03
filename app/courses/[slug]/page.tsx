@@ -1,26 +1,27 @@
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2 } from "lucide-react"
-import type { Metadata } from "next"
-import { auth } from "@/auth"
-import { prisma } from "@/lib/prisma"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2 } from "lucide-react";
+import type { Metadata } from "next";
+import { auth } from "@/auth";
+import { enrollInCourse } from "@/lib/actions/enrollment";
+import { prisma } from "@/lib/prisma";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
-type Props = { params: Promise<{ slug: string }> }
+type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const course = await prisma.course.findUnique({ where: { slug } })
-  if (!course) return {}
-  return { title: course.title, description: course.summary }
+  const { slug } = await params;
+  const course = await prisma.course.findUnique({ where: { slug } });
+  if (!course) return {};
+  return { title: course.title, description: course.summary };
 }
 
 export default async function CourseDetailPage({ params }: Props) {
-  const { slug } = await params
-  const session = await auth()
-  const userId = session?.user?.id
+  const { slug } = await params;
+  const session = await auth();
+  const userId = session?.user?.id;
 
   const course = await prisma.course.findUnique({
     where: { slug },
@@ -34,19 +35,25 @@ export default async function CourseDetailPage({ params }: Props) {
           },
         },
       },
+      enrollments: {
+        where: { userId: userId ?? "" },
+        select: { id: true },
+      },
     },
-  })
+  });
 
-  if (!course) notFound()
+  if (!course) notFound();
 
   const completedModules = course.modules.filter(
-    (module) => module.progress.length > 0
-  ).length
-  const totalModules = course.modules.length
-  const isCourseCompleted = totalModules > 0 && completedModules === totalModules
+    (module) => module.progress.length > 0,
+  ).length;
+  const totalModules = course.modules.length;
+  const isCourseCompleted =
+    totalModules > 0 && completedModules === totalModules;
+  const isEnrolled = course.enrollments.length > 0;
   const nextModule =
     course.modules.find((module) => module.progress.length === 0) ??
-    course.modules[0]
+    course.modules[0];
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-10">
@@ -86,7 +93,7 @@ export default async function CourseDetailPage({ params }: Props) {
 
         <ol className="flex flex-col gap-2">
           {course.modules.map((mod) => {
-            const isCompleted = mod.progress.length > 0
+            const isCompleted = mod.progress.length > 0;
 
             return (
               <li key={mod.id}>
@@ -126,7 +133,7 @@ export default async function CourseDetailPage({ params }: Props) {
                   <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
                 </Link>
               </li>
-            )
+            );
           })}
         </ol>
       </div>
@@ -134,22 +141,40 @@ export default async function CourseDetailPage({ params }: Props) {
       {/* Start CTA */}
       <div className="mt-8 flex justify-end">
         {nextModule ? (
-          <Button variant={isCourseCompleted ? "secondary" : "default"} asChild>
-            <Link href={`/courses/${course.slug}/modules/${nextModule.order}`}>
-              {isCourseCompleted
-                ? "Curso completado"
-                : completedModules > 0
-                  ? "Continuar curso"
-                  : "Empezar curso"}
-              {isCourseCompleted ? (
-                <CheckCircle2 className="ml-1 h-4 w-4" />
-              ) : (
-                <ArrowRight className="ml-1 h-4 w-4" />
-              )}
-            </Link>
-          </Button>
+          isEnrolled ? (
+            <Button
+              variant={isCourseCompleted ? "secondary" : "default"}
+              asChild
+            >
+              <Link
+                href={`/courses/${course.slug}/modules/${nextModule.order}`}
+              >
+                {isCourseCompleted
+                  ? "Curso completado"
+                  : completedModules > 0
+                    ? "Continuar curso"
+                    : "Empezar curso"}
+                {isCourseCompleted ? (
+                  <CheckCircle2 className="ml-1 h-4 w-4" />
+                ) : (
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                )}
+              </Link>
+            </Button>
+          ) : (
+            <form action={enrollInCourse}>
+              <input type="hidden" name="courseId" value={course.id} />
+              <input type="hidden" name="slug" value={course.slug} />
+              <input
+                type="hidden"
+                name="nextOrder"
+                value={String(nextModule.order)}
+              />
+              <Button type="submit">Empezar curso</Button>
+            </form>
+          )
         ) : null}
       </div>
     </div>
-  )
+  );
 }

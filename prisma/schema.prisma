@@ -13,6 +13,7 @@ model User {
   name         String
   passwordHash String
   createdAt    DateTime   @default(now())
+  enrollments  Enrollment[]
   progress     Progress[]
 
   @@map("users")
@@ -25,6 +26,7 @@ model Course {
   summary     String
   level       String
   isPublished Boolean  @default(false)
+  enrollments Enrollment[]
   modules     Module[]
 
   @@map("courses")
@@ -53,4 +55,16 @@ model Progress {
 
   @@unique([userId, moduleId])
   @@map("progress")
+}
+
+model Enrollment {
+  id         String   @id @default(uuid())
+  userId     String
+  courseId   String
+  enrolledAt DateTime @default(now())
+  course     Course   @relation(fields: [courseId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
 }

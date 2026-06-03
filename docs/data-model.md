@@ -11,14 +11,15 @@ The model prioritizes clarity and scalability over completeness.
 
 ## Access Model
 
-All registered users have free access to all courses. No enrollment or payment
-is required to start a course in the MVP.
+All registered users have free access to all published courses. Enrollment is
+tracked to support progress and dashboard experience, but it does not represent
+payment or restricted access in the MVP.
 
 This decision is intentional. It eliminates onboarding friction and allows the
 platform to collect real usage data before introducing monetization.
 
-**Post-MVP:** A subscription or access model will be introduced. When that
-happens, an `Enrollment` or `Subscription` entity will be added without
+**Post-MVP:** A subscription or access model will be introduced. The current
+`Enrollment` model can evolve toward paid access or entitlement rules without
 breaking the existing progress tracking model.
 
 ---
@@ -40,6 +41,11 @@ Represents a step or stage within a course.
 ### Progress
 
 Represents a user's advancement through a course, tracked at the module level.
+
+### Enrollment
+
+Represents a user's enrollment in a course. It is used for tracking and UX
+flows (e.g. dashboard and start/continue CTAs), not billing.
 
 ---
 
@@ -85,12 +91,24 @@ Represents a user's advancement through a course, tracked at the module level.
 | moduleId    | uuid      | Foreign key → Module               |
 | completedAt | timestamp | When the student marked it done    |
 
+### Enrollment
+
+| Field      | Type      | Notes                              |
+|------------|-----------|------------------------------------|
+| id         | uuid      | Primary key                        |
+| userId     | uuid      | Foreign key → User                 |
+| courseId   | uuid      | Foreign key → Course               |
+| enrolledAt | timestamp | When the student started the course |
+
 ---
 
 ## Relationships
 
 - A `Course` has many `Modules`
 - A `Module` belongs to one `Course`
+- A `User` has many `Enrollments`
+- An `Enrollment` belongs to one `User` and one `Course`
+- The combination of `(userId, courseId)` in `Enrollment` must be unique
 - A `User` has many `Progress` records
 - A `Progress` record belongs to one `User` and one `Module`
 - The combination of `(userId, moduleId)` in `Progress` must be unique
@@ -104,7 +122,7 @@ The following concepts are intentionally excluded:
 | Concept                   | Reason                                                  |
 |---------------------------|---------------------------------------------------------|
 | Payments                  | All content is free for registered users in the MVP     |
-| Enrollment / subscription | Access is open; this will be added post-MVP             |
+| Subscription / paid access| Access is open and free in MVP; monetization is post-MVP|
 | Roles and permissions     | No admin workflows required yet                         |
 | Certificates              | Out of scope for this phase                             |
 | Comments or reviews       | Out of scope for this phase                             |
