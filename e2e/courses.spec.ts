@@ -5,7 +5,6 @@
  */
 
 import { test, expect } from "@playwright/test"
-import { cleanupTestUsers } from "./helpers/seed"
 import { createTestUser, registerAndLogin } from "./helpers/auth"
 
 const FIRST_COURSE_SLUG = "real-world-auth"
@@ -43,10 +42,6 @@ test.describe("Course enrollment (authenticated)", () => {
   test.beforeEach(async ({ page }) => {
     user = createTestUser()
     await registerAndLogin(page, user)
-  })
-
-  test.afterAll(async () => {
-    await cleanupTestUsers()
   })
 
   test("shows Empezar curso CTA when not enrolled", async ({ page }) => {

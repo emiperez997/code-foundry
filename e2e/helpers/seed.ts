@@ -1,11 +1,15 @@
 /**
  * e2e/helpers/seed.ts
  *
- * Cleans up E2E test data from the database before/after suites.
- * Uses Prisma directly — runs in Node context (not in the browser).
+ * Cleans up E2E test data from the database.
+ * Uses Prisma directly — must be run as a standalone script via tsx,
+ * NOT imported inside Playwright spec files (ESM/CJS conflict).
  *
  * Only removes users whose email matches the e2e- prefix pattern
  * so it never touches real data.
+ *
+ * Usage:
+ *   pnpm cleanup:e2e
  */
 
 import "dotenv/config"
@@ -16,15 +20,18 @@ const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
 })
 
-export const prisma = new PrismaClient({ adapter })
+const prisma = new PrismaClient({ adapter })
 
-export async function cleanupTestUsers(): Promise<void> {
+async function cleanupTestUsers(): Promise<void> {
   const testUsers = await prisma.user.findMany({
     where: { email: { startsWith: "e2e-" } },
     select: { id: true },
   })
 
-  if (testUsers.length === 0) return
+  if (testUsers.length === 0) {
+    console.log("No E2E test users found.")
+    return
+  }
 
   const userIds = testUsers.map((u) => u.id)
 
@@ -32,4 +39,14 @@ export async function cleanupTestUsers(): Promise<void> {
   await prisma.progress.deleteMany({ where: { userId: { in: userIds } } })
   await prisma.enrollment.deleteMany({ where: { userId: { in: userIds } } })
   await prisma.user.deleteMany({ where: { id: { in: userIds } } })
+
+  console.log(`Removed ${testUsers.length} E2E test user(s).`)
 }
+
+cleanupTestUsers()
+  .catch((err) => {
+    console.error("Cleanup failed:", err)
+    process.exit(1)
+  })
+  .finally(() => prisma.$disconnect())
+

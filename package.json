@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "cleanup:e2e": "tsx e2e/helpers/seed.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

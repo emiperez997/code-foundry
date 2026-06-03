@@ -30,6 +30,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://codefoundry:codefoundry@localhost:5432/codefoundry_test
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      AUTH_TRUST_HOST: "true"
 
     steps:
       - name: Checkout

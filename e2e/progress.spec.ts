@@ -6,7 +6,6 @@
  */
 
 import { test, expect } from "@playwright/test"
-import { cleanupTestUsers } from "./helpers/seed"
 import { createTestUser, registerAndLogin } from "./helpers/auth"
 
 const COURSE_SLUG = "real-world-auth"
@@ -18,10 +17,6 @@ test.describe("Progress tracking (critical flow)", () => {
   test.beforeEach(async ({ page }) => {
     user = createTestUser()
     await registerAndLogin(page, user)
-  })
-
-  test.afterAll(async () => {
-    await cleanupTestUsers()
   })
 
   test("completing a module marks it as completed in the module list", async ({
