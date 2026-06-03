@@ -1,61 +1,61 @@
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react"
-import type { Metadata } from "next"
-import { auth } from "@/auth"
-import { prisma } from "@/lib/prisma"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { ModuleProgressForm } from "@/components/module-progress-form"
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
+import type { Metadata } from "next";
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { ModuleProgressForm } from "@/components/module-progress-form";
 
-type Props = { params: Promise<{ slug: string; order: string }> }
+type Props = { params: Promise<{ slug: string; order: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug, order } = await params
-  const orderNum = parseInt(order, 10)
-  if (isNaN(orderNum)) return {}
+  const { slug, order } = await params;
+  const orderNum = parseInt(order, 10);
+  if (isNaN(orderNum)) return {};
 
-  const course = await prisma.course.findUnique({ where: { slug } })
-  if (!course) return {}
+  const course = await prisma.course.findUnique({ where: { slug } });
+  if (!course) return {};
 
   const mod = await prisma.module.findUnique({
     where: { courseId_order: { courseId: course.id, order: orderNum } },
-  })
-  if (!mod) return {}
+  });
+  if (!mod) return {};
 
   return {
     title: `${mod.title} — ${course.title}`,
-  }
+  };
 }
 
 export default async function ModulePage({ params }: Props) {
-  const { slug, order } = await params
-  const orderNum = parseInt(order, 10)
-  if (isNaN(orderNum)) notFound()
+  const { slug, order } = await params;
+  const orderNum = parseInt(order, 10);
+  if (isNaN(orderNum)) notFound();
 
-  const session = await auth()
-  const userId = session?.user?.id
+  const session = await auth();
+  const userId = session?.user?.id;
 
   const course = await prisma.course.findUnique({
     where: { slug },
     include: { modules: { orderBy: { order: "asc" } } },
-  })
-  if (!course) notFound()
+  });
+  if (!course) notFound();
 
-  const mod = course.modules.find((m) => m.order === orderNum)
-  if (!mod) notFound()
+  const mod = course.modules.find((m) => m.order === orderNum);
+  if (!mod) notFound();
 
   const progress = userId
     ? await prisma.progress.findUnique({
         where: { userId_moduleId: { userId, moduleId: mod.id } },
       })
-    : null
-  const isCompleted = !!progress
+    : null;
+  const isCompleted = !!progress;
 
-  const totalModules = course.modules.length
-  const prevModule = course.modules.find((m) => m.order === orderNum - 1)
-  const nextModule = course.modules.find((m) => m.order === orderNum + 1)
+  const totalModules = course.modules.length;
+  const prevModule = course.modules.find((m) => m.order === orderNum - 1);
+  const nextModule = course.modules.find((m) => m.order === orderNum + 1);
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-10">
@@ -99,7 +99,11 @@ export default async function ModulePage({ params }: Props) {
 
       <Separator className="my-8" />
 
-      <div className="mb-8 flex items-center justify-between rounded-lg border bg-muted/30 p-4">
+      <div
+        className={`mb-8 flex items-center justify-between rounded-lg border p-4 ${
+          isCompleted ? "border-emerald-200 bg-emerald-50" : "bg-muted/30"
+        }`}
+      >
         <div>
           <p className="text-sm font-medium">Estado del módulo</p>
           <p className="text-xs text-muted-foreground">
@@ -108,6 +112,7 @@ export default async function ModulePage({ params }: Props) {
               : "Cuando lo termines, marca este módulo como completado."}
           </p>
         </div>
+
         <ModuleProgressForm
           moduleId={mod.id}
           slug={slug}
@@ -185,5 +190,5 @@ export default async function ModulePage({ params }: Props) {
         </ol>
       </div>
     </div>
-  )
+  );
 }

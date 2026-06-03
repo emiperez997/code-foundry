@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { ArrowRight, BookOpen, Code2, Layers } from "lucide-react"
+import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,6 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 
 export default async function HomePage() {
+  const session = await auth()
   const courses = await prisma.course.findMany({
     where: { isPublished: true },
     include: { _count: { select: { modules: true } } },
@@ -44,9 +46,11 @@ export default async function HomePage() {
                   <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/register">Crear cuenta gratis</Link>
-              </Button>
+              {!session && (
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="/register">Crear cuenta gratis</Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
