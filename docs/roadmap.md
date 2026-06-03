@@ -55,9 +55,9 @@ Este bloque agrupa el trabajo final para considerar el MVP como "release-ready".
 
 ## Fase 8 — Validación de punta a punta
 
-- [ ] Agregar tests E2E del flujo crítico (auth → curso → progreso → dashboard)
-- [ ] Mantener unit tests + typecheck en verde en cada PR
-- [ ] Cubrir casos de regresión de tracking y navegación
+- [x] Agregar tests E2E del flujo crítico (auth → curso → progreso → dashboard)
+- [x] Mantener unit tests + typecheck en verde en cada PR
+- [x] Cubrir casos de regresión de tracking y navegación
 
 ## Fase 9 — CI/CD mínimo y release checklist
 

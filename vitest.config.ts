@@ -5,6 +5,8 @@ export default defineConfig({
   test: {
     environment: "node",
     clearMocks: true,
+    include: ["lib/**/*.test.ts"],
+    exclude: ["e2e/**", "node_modules/**", ".agents/**"],
   },
   resolve: {
     alias: {
