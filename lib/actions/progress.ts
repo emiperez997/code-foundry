@@ -27,6 +27,29 @@ export async function markModuleCompleted(
     return { error: "No pudimos identificar el módulo." }
   }
 
+  const moduleRecord = await prisma.module.findUnique({
+    where: { id: moduleId },
+    select: { courseId: true },
+  })
+
+  if (!moduleRecord) {
+    return { error: "No pudimos identificar el módulo." }
+  }
+
+  await prisma.enrollment.upsert({
+    where: {
+      userId_courseId: {
+        userId,
+        courseId: moduleRecord.courseId,
+      },
+    },
+    update: {},
+    create: {
+      userId,
+      courseId: moduleRecord.courseId,
+    },
+  })
+
   await prisma.progress.upsert({
     where: { userId_moduleId: { userId, moduleId } },
     update: { completedAt: new Date() },

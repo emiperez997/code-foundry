@@ -31,11 +31,9 @@ export default async function DashboardPage() {
   const courses = await prisma.course.findMany({
     where: {
       isPublished: true,
-      modules: {
+      enrollments: {
         some: {
-          progress: {
-            some: { userId },
-          },
+          userId,
         },
       },
     },

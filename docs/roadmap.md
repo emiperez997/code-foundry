@@ -39,10 +39,10 @@ Este bloque agrupa el trabajo final para considerar el MVP como "release-ready".
 
 ## Fase 6 — Inscripción y progreso real
 
-- [ ] Crear entidad `Enrollment` (`userId`, `courseId`, `enrolledAt`)
-- [ ] Definir regla de inscripción (explícita o automática al iniciar curso)
-- [ ] Ajustar Dashboard para mostrar cursos inscritos aunque no tengan `Progress`
-- [ ] Mantener compatibilidad con progreso por módulo (`Progress`)
+- [x] Crear entidad `Enrollment` (`userId`, `courseId`, `enrolledAt`)
+- [x] Definir regla de inscripción (explícita o automática al iniciar curso)
+- [x] Ajustar Dashboard para mostrar cursos inscritos aunque no tengan `Progress`
+- [x] Mantener compatibilidad con progreso por módulo (`Progress`)
 
 ## Fase 7 — Flujo guiado y UX final
 
