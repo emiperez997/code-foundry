@@ -86,6 +86,9 @@ Para desarrollo, usá `pnpm dev`. Los scripts `predev` y `prebuild` validan el
 entorno y generan Prisma antes de arrancar o compilar; `prestart` valida el entorno.
 Los comandos directos de Next.js no ejecutan esas comprobaciones.
 
+La política de acceso, los límites persistentes de autenticación y su mantenimiento
+se documentan en [access-auth.md](access-auth.md).
+
 ## Resultado de la Fase 2
 
 La evidencia local y las limitaciones se registran en el roadmap. El cierre de esta

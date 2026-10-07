@@ -20,6 +20,10 @@ Variables requeridas:
 | `DATABASE_URL` | Connection string de PostgreSQL |
 | `AUTH_SECRET` | Secret de Auth.js para firmar sesiones (mínimo 32 caracteres) |
 
+Configurar `AUTH_URL` con el origen del entorno destino cuando corresponda. Para
+`pnpm start` local, usar `http://localhost:3000` (o el puerto elegido). Verificar
+que Auth.js reconoce el host antes de ejecutar el smoke test.
+
 ---
 
 ## 2. Migraciones pendientes
@@ -27,6 +31,7 @@ Variables requeridas:
 Asegurarse de que todas las migraciones están aplicadas en la DB destino.
 
 ```bash
+pnpm db:generate
 pnpm db:migrate
 ```
 
@@ -104,6 +109,8 @@ URL del repo: `https://github.com/<org>/code-foundry/actions`
 ---
 
 ## Post-release
+
+- [ ] Programar la limpieza periódica de ventanas vencidas con `pnpm db:prune-auth-limits`
 
 - [ ] Verificar que las rutas `/courses`, `/login` y `/dashboard` responden correctamente en producción
 - [ ] Revisar logs de errores en las primeras 10 minutos después del deploy

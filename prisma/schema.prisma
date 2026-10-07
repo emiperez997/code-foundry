@@ -7,6 +7,15 @@ datasource db {
   provider = "postgresql"
 }
 
+model AuthRateLimit {
+  key       String   @id
+  count     Int
+  expiresAt DateTime @map("expires_at")
+
+  @@index([expiresAt])
+  @@map("auth_rate_limits")
+}
+
 model User {
   id           String     @id @default(uuid())
   email        String     @unique

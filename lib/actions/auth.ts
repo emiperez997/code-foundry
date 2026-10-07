@@ -5,79 +5,58 @@ import { signIn } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { AuthError } from "next-auth"
 import { redirect } from "next/navigation"
+import { hasControlCharacters, normalizeEmail, safeCallbackPath, textField, validEmail, validPasswordLength } from "@/lib/auth/validation"
+import { consumeRateLimit, rateLimitKey } from "@/lib/auth/rate-limit"
 
-// ---------------------------------------------------------------------------
-// Login
-// ---------------------------------------------------------------------------
+export type LoginState = { error?: string }
+export type RegisterState = { error?: string }
 
-export type LoginState = {
-  error?: string
-}
-
-export async function login(
-  _prev: LoginState,
-  formData: FormData
-): Promise<LoginState> {
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
-
-  if (!email || !password) {
-    return { error: "Email y contraseña son obligatorios." }
+export async function login(_prev: LoginState, formData: FormData): Promise<LoginState> {
+  const email = normalizeEmail(textField(formData, "email"))
+  const password = textField(formData, "password")
+  if (!email || !password) return { error: "Email y contraseña son obligatorios." }
+  if (!validEmail(email) || !validPasswordLength(password)) {
+    return { error: "Email o contraseña incorrectos." }
   }
-
   try {
     await signIn("credentials", { email, password, redirect: false })
-  } catch (err) {
-    if (err instanceof AuthError) {
-      return { error: "Email o contraseña incorrectos." }
-    }
-    throw err
+  } catch (error) {
+    if (error instanceof AuthError) return { error: "Email o contraseña incorrectos." }
+    throw error
   }
-
-  redirect("/courses")
+  redirect(safeCallbackPath(textField(formData, "callbackUrl")))
 }
 
-// ---------------------------------------------------------------------------
-// Register
-// ---------------------------------------------------------------------------
-
-export type RegisterState = {
-  error?: string
-}
-
-export async function register(
-  _prev: RegisterState,
-  formData: FormData
-): Promise<RegisterState> {
-  const name = (formData.get("name") as string)?.trim()
-  const email = (formData.get("email") as string)?.trim().toLowerCase()
-  const password = formData.get("password") as string
-
-  if (!name || !email || !password) {
-    return { error: "Todos los campos son obligatorios." }
+export async function register(_prev: RegisterState, formData: FormData): Promise<RegisterState> {
+  const name = textField(formData, "name").trim()
+  const email = normalizeEmail(textField(formData, "email"))
+  const password = textField(formData, "password")
+  const callbackUrl = safeCallbackPath(textField(formData, "callbackUrl"))
+  if (!name || !email || !password) return { error: "Todos los campos son obligatorios." }
+  if (password.length < 8) return { error: "La contraseña debe tener al menos 8 caracteres." }
+  if (name.length > 100 || hasControlCharacters(name) || !validEmail(email) || !validPasswordLength(password)) {
+    return { error: "Revisá el nombre, el email y la contraseña (máximo 72 bytes)." }
   }
-
-  if (password.length < 8) {
-    return { error: "La contraseña debe tener al menos 8 caracteres." }
+  if (!await consumeRateLimit("register:global", 100, 15 * 60) ||
+      !await consumeRateLimit(rateLimitKey("register:email", email), 5, 15 * 60)) {
+    return { error: "Demasiados intentos de registro. Intentá nuevamente en unos minutos." }
   }
-
   const existing = await prisma.user.findUnique({ where: { email } })
-  if (existing) {
-    return { error: "Ya existe una cuenta con ese email." }
-  }
-
+  if (existing) return { error: "Ya existe una cuenta con ese email." }
   const passwordHash = await bcrypt.hash(password, 12)
-
-  await prisma.user.create({
-    data: { name, email, passwordHash },
-  })
-
-  // Log in immediately after registration
+  try {
+    await prisma.user.create({ data: { name, email, passwordHash } })
+  } catch (error) {
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "P2002") {
+      return { error: "Ya existe una cuenta con ese email." }
+    }
+    throw error
+  }
   try {
     await signIn("credentials", { email, password, redirect: false })
-  } catch {
-    redirect("/login")
+  } catch (error) {
+    if (!(error instanceof AuthError)) throw error
+    redirect(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`)
   }
-
-  redirect("/courses")
+  redirect(callbackUrl)
 }

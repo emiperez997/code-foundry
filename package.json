@@ -18,6 +18,7 @@
     "db:check": "tsx scripts/check-db.ts",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "prisma db seed",
+    "db:prune-auth-limits": "tsx scripts/prune-auth-limits.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",

@@ -27,25 +27,25 @@ complementarios y criterios de finalización.
 
 ## Módulos y entregas
 
-| Módulo | Contenido | Hito |
-|---|---|---|
-| 1. Entender el problema | Usuarios, recursos privados, riesgos y requisitos | Preparación de entrega 1 |
-| 2. Registro de usuarios | Registro, validación del servidor y duplicados | Preparación de entrega 1 |
-| 3. Almacenamiento de contraseñas | Hashing y justificación de decisiones | Entrega 1: registro y contraseñas |
-| 4. Login y verificación de identidad | Credenciales, errores e información sensible | Preparación de entrega 2 |
-| 5. Sesiones y logout | Persistencia, vencimiento y cierre de sesión | Entrega 2: login y sesiones |
-| 6. Protección de recursos | Autorización del servidor y acceso sin sesión | Preparación de entrega 3 |
-| 7. Roles y permisos | Usuario, administrador e integración | Entrega 3: autorización e integración final |
+| Módulo                               | Contenido                                         | Hito                                        |
+| ------------------------------------ | ------------------------------------------------- | ------------------------------------------- |
+| 1. Entender el problema              | Usuarios, recursos privados, riesgos y requisitos | Preparación de entrega 1                    |
+| 2. Registro de usuarios              | Registro, validación del servidor y duplicados    | Preparación de entrega 1                    |
+| 3. Almacenamiento de contraseñas     | Hashing y justificación de decisiones             | Entrega 1: registro y contraseñas           |
+| 4. Login y verificación de identidad | Credenciales, errores e información sensible      | Preparación de entrega 2                    |
+| 5. Sesiones y logout                 | Persistencia, vencimiento y cierre de sesión      | Entrega 2: login y sesiones                 |
+| 6. Protección de recursos            | Autorización del servidor y acceso sin sesión     | Preparación de entrega 3                    |
+| 7. Roles y permisos                  | Usuario, administrador e integración              | Entrega 3: autorización e integración final |
 
 Las tres entregas son obligatorias y evolucionan el mismo proyecto.
 
 ### Criterios obligatorios
 
-| Entrega | Criterios de aceptación |
-|---|---|
-| 1. Registro y contraseñas | El registro válido crea una cuenta; el servidor rechaza datos inválidos; los duplicados producen errores controlados; las contraseñas se almacenan con un hash apropiado; las respuestas excluyen contraseñas y hashes; hay pruebas de los casos principales y una explicación de decisiones. |
-| 2. Login y sesiones | Las credenciales válidas permiten entrar; las inválidas producen un mensaje genérico; la sesión persiste entre solicitudes; las sesiones inválidas o vencidas se rechazan; el logout elimina el acceso autenticado del navegador; los intentos repetidos tienen un límite verificable; hay pruebas y documentación. |
-| 3. Autorización e integración | Los recursos privados rechazan solicitudes sin sesión; cada usuario solo accede a sus recursos; las operaciones administrativas requieren el rol correspondiente; manipular datos del cliente no concede permisos; funciona el flujo completo; el README permite instalar y verificar la solución. |
+| Entrega                       | Criterios de aceptación                                                                                                                                                                                                                                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Registro y contraseñas     | El registro válido crea una cuenta; el servidor rechaza datos inválidos; los duplicados producen errores controlados; las contraseñas se almacenan con un hash apropiado; las respuestas excluyen contraseñas y hashes; hay pruebas de los casos principales y una explicación de decisiones.                       |
+| 2. Login y sesiones           | Las credenciales válidas permiten entrar; las inválidas producen un mensaje genérico; la sesión persiste entre solicitudes; las sesiones inválidas o vencidas se rechazan; el logout elimina el acceso autenticado del navegador; los intentos repetidos tienen un límite verificable; hay pruebas y documentación. |
+| 3. Autorización e integración | Los recursos privados rechazan solicitudes sin sesión; cada usuario solo accede a sus recursos; las operaciones administrativas requieren el rol correspondiente; manipular datos del cliente no concede permisos; funciona el flujo completo; el README permite instalar y verificar la solución.                  |
 
 Antes de publicar, cada criterio tendrá un procedimiento de comprobación y un
 resultado esperado. Se permiten distintas implementaciones que cumplan la
@@ -57,16 +57,16 @@ El alumno presenta enlace al repositorio, commit exacto, instrucciones de ejecuc
 resultados de pruebas y una explicación breve. Las evidencias corresponden al
 commit presentado y el corrector debe poder acceder al repositorio.
 
-| Regla | Definición |
-|---|---|
-| Estados | Enviada → En revisión → Aprobada o Cambios solicitados |
-| Asignación | Un profesor asignado al curso toma la entrega; solo un corrector mantiene una revisión activa sobre ella |
-| Evaluación | Cada criterio se marca como cumple o requiere cambios; una devolución es obligatoria cuando requiere cambios |
-| Aprobación | Todos los criterios obligatorios deben cumplirse; sin nota numérica |
-| Reintentos | Sin límite y sin vencimiento durante la beta; cada reenvío identifica un nuevo commit y conserva el historial |
-| Secuencia | La entrega anterior debe estar aprobada para enviar la siguiente; las lecturas siguen disponibles durante la espera |
-| Versionado | Se conserva la consigna y la rúbrica aplicables a cada entrega |
-| Imparcialidad | Ningún profesor puede corregir su propia entrega |
+| Regla         | Definición                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Estados       | Enviada → En revisión → Aprobada o Cambios solicitados                                                              |
+| Asignación    | Un profesor asignado al curso toma la entrega; solo un corrector mantiene una revisión activa sobre ella            |
+| Evaluación    | Cada criterio se marca como cumple o requiere cambios; una devolución es obligatoria cuando requiere cambios        |
+| Aprobación    | Todos los criterios obligatorios deben cumplirse; sin nota numérica                                                 |
+| Reintentos    | Sin límite y sin vencimiento durante la beta; cada reenvío identifica un nuevo commit y conserva el historial       |
+| Secuencia     | La entrega anterior debe estar aprobada para enviar la siguiente; las lecturas siguen disponibles durante la espera |
+| Versionado    | Se conserva la consigna y la rúbrica aplicables a cada entrega                                                      |
+| Imparcialidad | Ningún profesor puede corregir su propia entrega                                                                    |
 
 ## Roles y paneles
 
@@ -74,11 +74,11 @@ Una persona puede tener varios roles. El registro público crea alumnos; solo un
 administrador otorga permisos adicionales. Administrador y usuario en el proyecto
 del curso son conceptos distintos de los roles de la plataforma.
 
-| Rol | Funciones |
-|---|---|
-| Alumno | Inscribirse, leer módulos, enviar entregas, consultar devoluciones, reenviar correcciones y obtener su certificado; acceso solo a sus entregas y resultados |
-| Profesor corrector | Bandeja de pendientes de cursos asignados, toma de entregas, evaluación por criterio, devoluciones e historial; no administra usuarios ni cambia rúbricas |
-| Administrador | Buscar y consultar usuarios, invitar profesores, gestionar roles, activar o desactivar cuentas, asignar profesores a cursos y consultar entregas pendientes |
+| Rol                | Funciones                                                                                                                                                   |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Alumno             | Inscribirse, leer módulos, enviar entregas, consultar devoluciones, reenviar correcciones y obtener su certificado; acceso solo a sus entregas y resultados |
+| Profesor corrector | Bandeja de pendientes de cursos asignados, toma de entregas, evaluación por criterio, devoluciones e historial; no administra usuarios ni cambia rúbricas   |
+| Administrador      | Buscar y consultar usuarios, invitar profesores, gestionar roles, activar o desactivar cuentas, asignar profesores a cursos y consultar entregas pendientes |
 
 Se registra quién corrigió, cuándo y con qué resultado, y quién modificó roles o
 el estado de una cuenta. Los estados y devoluciones se consultan en la aplicación.

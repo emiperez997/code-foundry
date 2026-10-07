@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { positiveOrder } from "@/lib/auth/validation";
 import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
 import type { Metadata } from "next";
 import { auth } from "@/auth";
@@ -13,10 +14,10 @@ type Props = { params: Promise<{ slug: string; order: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, order } = await params;
-  const orderNum = parseInt(order, 10);
-  if (isNaN(orderNum)) return {};
+  const orderNum = positiveOrder(order);
+  if (orderNum === null) return {};
 
-  const course = await prisma.course.findUnique({ where: { slug } });
+  const course = await prisma.course.findUnique({ where: { slug, isPublished: true } });
   if (!course) return {};
 
   const mod = await prisma.module.findUnique({
@@ -31,14 +32,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ModulePage({ params }: Props) {
   const { slug, order } = await params;
-  const orderNum = parseInt(order, 10);
-  if (isNaN(orderNum)) notFound();
+  const orderNum = positiveOrder(order);
+  if (orderNum === null) notFound();
 
   const session = await auth();
   const userId = session?.user?.id;
+  if (!userId) redirect(`/login?callbackUrl=${encodeURIComponent(`/courses/${slug}/modules/${orderNum}`)}`);
 
   const course = await prisma.course.findUnique({
-    where: { slug },
+    where: { slug, isPublished: true },
     include: { modules: { orderBy: { order: "asc" } } },
   });
   if (!course) notFound();

@@ -13,7 +13,7 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const course = await prisma.course.findUnique({ where: { slug } });
+  const course = await prisma.course.findUnique({ where: { slug, isPublished: true } });
   if (!course) return {};
   return { title: course.title, description: course.summary };
 }
@@ -24,7 +24,7 @@ export default async function CourseDetailPage({ params }: Props) {
   const userId = session?.user?.id;
 
   const course = await prisma.course.findUnique({
-    where: { slug },
+    where: { slug, isPublished: true },
     include: {
       modules: {
         orderBy: { order: "asc" },

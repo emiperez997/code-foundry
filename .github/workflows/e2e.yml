@@ -57,6 +57,11 @@ jobs:
       - name: Seed database
         run: pnpm exec tsx prisma/seed.ts
 
+      - name: Access and rate limit integration tests
+        run: pnpm exec vitest run lib/auth/access.integration.test.ts
+        env:
+          RUN_DB_TESTS: "1"
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install chromium --with-deps
 

@@ -17,7 +17,7 @@ import {
 
 const initialState: RegisterState = {}
 
-export function RegisterForm() {
+export function RegisterForm({ callbackUrl = "/courses" }: { callbackUrl?: string }) {
   const [state, action, pending] = useActionState(register, initialState)
 
   return (
@@ -30,6 +30,7 @@ export function RegisterForm() {
       </CardHeader>
 
       <form action={action}>
+        <input type="hidden" name="callbackUrl" value={callbackUrl} />
         <CardContent className="flex flex-col gap-4">
           {state.error && (
             <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -45,6 +46,7 @@ export function RegisterForm() {
               type="text"
               placeholder="Tu nombre"
               autoComplete="name"
+              maxLength={100}
               required
             />
           </div>
@@ -57,6 +59,7 @@ export function RegisterForm() {
               type="email"
               placeholder="tu@email.com"
               autoComplete="email"
+              maxLength={254}
               required
             />
           </div>
@@ -81,7 +84,7 @@ export function RegisterForm() {
           </Button>
           <p className="text-center text-sm text-muted-foreground">
             ¿Ya tienes cuenta?{" "}
-            <Link href="/login" className="text-foreground underline-offset-4 hover:underline">
+            <Link href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="text-foreground underline-offset-4 hover:underline">
               Inicia sesión
             </Link>
           </p>

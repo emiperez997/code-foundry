@@ -10,7 +10,7 @@ siguen a este plan describen el MVP anterior y no acreditan un release validado.
 | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------- |
 | 1. Alcance                               | Curso piloto, español, stack, entregas, roles, evaluación y certificado                                                 | Definido              |
 | 2. Entorno                               | Certificados de descarga de Prisma, cliente generado, variables, base local, migraciones y seed                         | Verificado localmente |
-| 3. Acceso y autenticación                | Publicación efectiva, validación del servidor, callback de login, normalización de email y límites de intentos          | Pendiente             |
+| 3. Acceso y autenticación                | Publicación efectiva, validación del servidor, callback de login, normalización de email y límites de intentos          | Verificado localmente |
 | 4. Diseño e implementación de evaluación | Roles y permisos, entregas versionadas, revisión por criterios, historial y paneles de alumno, profesor y administrador | Pendiente             |
 | 5. Curso piloto                          | Adaptación al español, siete lecciones, repositorio base, tres consignas con rúbricas comprobables y recursos           | Pendiente             |
 | 6. Certificados y experiencia            | Requisitos de aprobación, PDF y verificación, estados de interfaz, accesibilidad y revisión móvil                       | Pendiente             |
@@ -33,6 +33,18 @@ definidas las estructuras de módulos, entregas y criterios.
 Estas comprobaciones usan la base local configurada. No se ejecutaron E2E ni CI
 remoto; el flujo autenticado y la base aislada de E2E se validarán en la fase de calidad.
 La traducción y la publicación exclusiva del curso piloto pertenecen a la fase de contenido.
+
+### Evidencia de la Fase 3
+
+- Detalle, módulos y metadatos filtran cursos publicados; módulos y dashboard comprueban sesión.
+- Inscripción y progreso comprueban que los identificadores pertenezcan al mismo curso publicado y usan la identidad de la sesión.
+- Login y registro conservan destinos internos seguros y normalizan email, también en el proveedor de credenciales.
+- Validación de tipos, longitudes y órdenes; registro controla duplicados concurrentes.
+- Límites persistidos en PostgreSQL para login y registro; migración aplicada en la base local.
+- 78 pruebas unitarias y cinco pruebas de integración con PostgreSQL aprobadas (concurrencia, vencimiento, publicación e aislamiento de progreso).
+- Lint y build de producción con chequeo de tipos aprobados.
+- Workflow E2E configurado para ejecutar las pruebas de integración en su base de prueba; CI remoto y recorrido completo de interfaz aún pendientes.
+- Políticas y operación documentadas en [access-auth.md](access-auth.md).
 
 ## Roadmap histórico
 

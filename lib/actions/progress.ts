@@ -3,92 +3,57 @@
 import { revalidatePath } from "next/cache"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { positiveOrder, textField, validSlug } from "@/lib/auth/validation"
 
-type ProgressActionState = {
-  error?: string
+type ProgressActionState = { error?: string }
+
+async function validatedModule(formData: FormData) {
+  const moduleId = textField(formData, "moduleId")
+  const slug = textField(formData, "slug")
+  const order = positiveOrder(textField(formData, "order"))
+  if (!moduleId || moduleId.length > 128 || !validSlug(slug) || order === null) return null
+  return prisma.module.findUnique({
+    where: { id: moduleId, order, course: { slug, isPublished: true } },
+    select: { id: true, courseId: true, order: true, course: { select: { slug: true } } },
+  })
 }
 
-export async function markModuleCompleted(
-  _prev: ProgressActionState,
-  formData: FormData
-): Promise<ProgressActionState> {
+function revalidateModule(moduleRecord: { order: number; course: { slug: string } }) {
+  revalidatePath(`/courses/${moduleRecord.course.slug}/modules/${moduleRecord.order}`)
+  revalidatePath(`/courses/${moduleRecord.course.slug}`)
+  revalidatePath("/dashboard")
+}
+
+export async function markModuleCompleted(_prev: ProgressActionState, formData: FormData): Promise<ProgressActionState> {
   const session = await auth()
   const userId = session?.user?.id
+  if (!userId) return { error: "Debes iniciar sesión para guardar progreso." }
+  const moduleRecord = await validatedModule(formData)
+  if (!moduleRecord) return { error: "No pudimos identificar el módulo." }
 
-  if (!userId) {
-    return { error: "Debes iniciar sesión para guardar progreso." }
-  }
-
-  const moduleId = formData.get("moduleId") as string
-  const slug = formData.get("slug") as string
-  const order = formData.get("order") as string
-
-  if (!moduleId || !slug || !order) {
-    return { error: "No pudimos identificar el módulo." }
-  }
-
-  const moduleRecord = await prisma.module.findUnique({
-    where: { id: moduleId },
-    select: { courseId: true },
-  })
-
-  if (!moduleRecord) {
-    return { error: "No pudimos identificar el módulo." }
-  }
-
-  await prisma.enrollment.upsert({
-    where: {
-      userId_courseId: {
-        userId,
-        courseId: moduleRecord.courseId,
-      },
-    },
-    update: {},
-    create: {
-      userId,
-      courseId: moduleRecord.courseId,
-    },
-  })
-
-  await prisma.progress.upsert({
-    where: { userId_moduleId: { userId, moduleId } },
-    update: { completedAt: new Date() },
-    create: { userId, moduleId },
-  })
-
-  revalidatePath(`/courses/${slug}/modules/${order}`)
-  revalidatePath(`/courses/${slug}`)
-  revalidatePath("/dashboard")
-
+  await prisma.$transaction([
+    prisma.enrollment.upsert({
+      where: { userId_courseId: { userId, courseId: moduleRecord.courseId } },
+      update: {},
+      create: { userId, courseId: moduleRecord.courseId },
+    }),
+    prisma.progress.upsert({
+      where: { userId_moduleId: { userId, moduleId: moduleRecord.id } },
+      update: { completedAt: new Date() },
+      create: { userId, moduleId: moduleRecord.id },
+    }),
+  ])
+  revalidateModule(moduleRecord)
   return {}
 }
 
-export async function markModulePending(
-  _prev: ProgressActionState,
-  formData: FormData
-): Promise<ProgressActionState> {
+export async function markModulePending(_prev: ProgressActionState, formData: FormData): Promise<ProgressActionState> {
   const session = await auth()
   const userId = session?.user?.id
-
-  if (!userId) {
-    return { error: "Debes iniciar sesión para guardar progreso." }
-  }
-
-  const moduleId = formData.get("moduleId") as string
-  const slug = formData.get("slug") as string
-  const order = formData.get("order") as string
-
-  if (!moduleId || !slug || !order) {
-    return { error: "No pudimos identificar el módulo." }
-  }
-
-  await prisma.progress.deleteMany({
-    where: { userId, moduleId },
-  })
-
-  revalidatePath(`/courses/${slug}/modules/${order}`)
-  revalidatePath(`/courses/${slug}`)
-  revalidatePath("/dashboard")
-
+  if (!userId) return { error: "Debes iniciar sesión para guardar progreso." }
+  const moduleRecord = await validatedModule(formData)
+  if (!moduleRecord) return { error: "No pudimos identificar el módulo." }
+  await prisma.progress.deleteMany({ where: { userId, moduleId: moduleRecord.id } })
+  revalidateModule(moduleRecord)
   return {}
 }

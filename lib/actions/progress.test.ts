@@ -8,6 +8,7 @@ const mocks = vi.hoisted(() => {
     enrollmentUpsert: vi.fn(),
     moduleFindUnique: vi.fn(),
     deleteMany: vi.fn(),
+    transaction: vi.fn(),
   }
 })
 
@@ -21,6 +22,7 @@ vi.mock("next/cache", () => ({
 
 vi.mock("@/lib/prisma", () => ({
   prisma: {
+    $transaction: mocks.transaction,
     enrollment: {
       upsert: mocks.enrollmentUpsert,
     },
@@ -38,7 +40,9 @@ import { markModuleCompleted, markModulePending } from "@/lib/actions/progress"
 
 describe("progress actions", () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks()
+    mocks.moduleFindUnique.mockResolvedValue({ id: "m1", courseId: "c1", order: 3, course: { slug: "real-world-auth" } })
+    mocks.transaction.mockImplementation(async (operations) => Promise.all(operations))
   })
 
   it("returns error if user is not logged in when completing", async () => {
@@ -113,7 +117,7 @@ describe("progress actions", () => {
 
   it("completes module and revalidates related paths", async () => {
     mocks.auth.mockResolvedValueOnce({ user: { id: "u1" } })
-    mocks.moduleFindUnique.mockResolvedValueOnce({ courseId: "c1" })
+    mocks.moduleFindUnique.mockResolvedValueOnce({ id: "m1", courseId: "c1", order: 3, course: { slug: "real-world-auth" } })
 
     const formData = new FormData()
     formData.set("moduleId", "m1")
@@ -124,8 +128,8 @@ describe("progress actions", () => {
 
     expect(result).toEqual({})
     expect(mocks.moduleFindUnique).toHaveBeenCalledWith({
-      where: { id: "m1" },
-      select: { courseId: true },
+      where: { id: "m1", order: 3, course: { slug: "real-world-auth", isPublished: true } },
+      select: { id: true, courseId: true, order: true, course: { select: { slug: true } } },
     })
     expect(mocks.enrollmentUpsert).toHaveBeenCalledTimes(1)
     expect(mocks.enrollmentUpsert).toHaveBeenCalledWith({
@@ -161,7 +165,7 @@ describe("progress actions", () => {
     const result = await markModulePending({}, formData)
 
     expect(result).toEqual({})
-    expect(mocks.moduleFindUnique).not.toHaveBeenCalled()
+    expect(mocks.moduleFindUnique).toHaveBeenCalledOnce()
     expect(mocks.enrollmentUpsert).not.toHaveBeenCalled()
     expect(mocks.deleteMany).toHaveBeenCalledTimes(1)
     expect(mocks.deleteMany).toHaveBeenCalledWith({
@@ -176,5 +180,18 @@ describe("progress actions", () => {
       "/courses/real-world-auth"
     )
     expect(mocks.revalidatePath).toHaveBeenNthCalledWith(3, "/dashboard")
+  })
+
+  it.each([markModuleCompleted, markModulePending])("rejects unavailable or mismatched modules before writing", async (action) => {
+    mocks.auth.mockResolvedValue({ user: { id: "u1" } })
+    mocks.moduleFindUnique.mockResolvedValue(null)
+    const form = new FormData()
+    form.set("moduleId", "m1")
+    form.set("slug", "other-course")
+    form.set("order", "3")
+    expect((await action({}, form)).error).toBeDefined()
+    expect(mocks.progressUpsert).not.toHaveBeenCalled()
+    expect(mocks.deleteMany).not.toHaveBeenCalled()
+    expect(mocks.enrollmentUpsert).not.toHaveBeenCalled()
   })
 })
