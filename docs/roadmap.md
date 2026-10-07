@@ -1,5 +1,27 @@
 # CodeFoundry — Roadmap MVP
 
+## Plan vigente de cierre
+
+El alcance acordado está en [mvp-scope.md](mvp-scope.md). Incluye revisión manual,
+paneles de profesores y administradores y certificados. Las listas históricas que
+siguen a este plan describen el MVP anterior y no acreditan un release validado.
+
+| Fase | Trabajo | Estado |
+|---|---|---|
+| 1. Alcance | Curso piloto, español, stack, entregas, roles, evaluación y certificado | Definido |
+| 2. Entorno | Certificados de descarga de Prisma, cliente generado, variables, base de prueba, migraciones y seed | Pendiente |
+| 3. Acceso y autenticación | Publicación efectiva, validación del servidor, callback de login, normalización de email y límites de intentos | Pendiente |
+| 4. Diseño e implementación de evaluación | Roles y permisos, entregas versionadas, revisión por criterios, historial y paneles de alumno, profesor y administrador | Pendiente |
+| 5. Curso piloto | Adaptación al español, siete lecciones, repositorio base, tres consignas con rúbricas comprobables y recursos | Pendiente |
+| 6. Certificados y experiencia | Requisitos de aprobación, PDF y verificación, estados de interfaz, accesibilidad y revisión móvil | Pendiente |
+| 7. Calidad y entrega | Corregir lint y E2E, comprobar typecheck, unitarios y build, CI y validación del flujo completo desplegado | Pendiente |
+| 8. Documentación y release | README, decisiones técnicas, operación, límites y checklist de release | Pendiente |
+
+El contenido puede desarrollarse en paralelo con la implementación una vez
+definidas las estructuras de módulos, entregas y criterios.
+
+## Roadmap histórico
+
 ## Fase 1 — Setup base
 
 - [x] Instalar y configurar shadcn/ui sobre Tailwind 4
@@ -10,7 +32,8 @@
 
 - [x] Ruta `/courses` — grid de CourseCards leyendo datos de Prisma (Server Component)
 - [x] Ruta `/courses/[slug]` — detalle del curso con lista de módulos
-- [x] Ruta `/courses/[slug]/modules/[order]` — vista del módulo (renderizado de Markdown)
+- [x] Ruta `/courses/[slug]/modules/[order]` — vista del módulo con descripción en texto
+- [ ] Renderizado de lecciones completas en el formato de contenido elegido
 
 ## Fase 3 — Autenticación
 

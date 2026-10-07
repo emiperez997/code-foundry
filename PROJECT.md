@@ -23,7 +23,14 @@ The product focus is:
 - Junior / semi-senior developers
 - People who want to practice real-world scenarios
 
-## Language
+## Idioma y alcance del MVP
 
-All core content (courses, documentation, domain concepts) is written in English
-to ensure global accessibility and future scalability.
+La interfaz, las lecciones, las consignas y los criterios de aceptación del MVP
+se escriben en español. Los recursos externos pueden estar en otro idioma si se indica.
+
+El MVP incluye un curso completo de autenticación, tres entregas con revisión manual,
+roles de alumno, profesor corrector y administrador, y un certificado de aprobación.
+El curso utiliza Next.js, TypeScript y PostgreSQL.
+
+La definición acordada de funcionalidades, evaluación y límites está en
+[docs/mvp-scope.md](docs/mvp-scope.md).
