@@ -27,7 +27,7 @@ Variables requeridas:
 Asegurarse de que todas las migraciones están aplicadas en la DB destino.
 
 ```bash
-pnpm exec prisma migrate deploy
+pnpm db:migrate
 ```
 
 Criterio: el comando termina sin errores y no reporta migraciones pendientes.
@@ -37,10 +37,12 @@ Criterio: el comando termina sin errores y no reporta migraciones pendientes.
 ## 3. Seed de cursos
 
 Sincronizar el contenido de `content/courses/` con la base de datos.
-Es seguro ejecutarlo múltiples veces (upsert, no insert).
+Actualiza cursos y módulos mediante upsert. Si se quitaron módulos del contenido,
+elimina esos módulos y su progreso; revisar primero el impacto en la base destino.
 
 ```bash
-pnpm exec tsx prisma/seed.ts
+pnpm db:check
+pnpm db:seed
 ```
 
 Criterio: todos los slugs de cursos aparecen en la salida como `✓ <slug> — N module(s) synced`.

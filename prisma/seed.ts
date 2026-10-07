@@ -7,8 +7,8 @@
  *   - Existing courses and modules are updated, not recreated.
  *   - Modules removed from a README are deleted from the DB (progress records first).
  *
- * Run via: prisma migrate dev  (executes seed automatically after migration)
- *      or: tsx prisma/seed.ts  (manual run)
+ * Run via: pnpm db:seed (seed explícito, separado de las migraciones)
+ *      or: tsx prisma/seed.ts (manual run)
  */
 
 // Load .env manually — this file runs as a subprocess of the Prisma CLI,

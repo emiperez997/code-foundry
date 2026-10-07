@@ -34,6 +34,10 @@ El foco del producto es:
 
 # Funcionalidades core (MVP)
 
+> El alcance vigente está en [docs/mvp-scope.md](docs/mvp-scope.md).
+> Para instalar y ejecutar el proyecto, seguí [la guía de entorno local](docs/local-setup.md).
+> La lista que sigue corresponde al planteamiento inicial del producto.
+
 ### 👤 Autenticación
 
 - Login
