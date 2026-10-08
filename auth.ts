@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { authorizeCredentials } from "@/lib/auth/credentials"
 import { authConfig } from "@/auth.config"
+import { prisma } from "@/lib/prisma"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
@@ -22,10 +23,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return token
     },
-    session({ session, token }) {
-      if (token.id) {
-        session.user.id = token.id as string
-      }
+    async session({ session, token }) {
+      const user = typeof token.id === "string" ? await prisma.user.findUnique({ where: { id: token.id }, select: { id: true, isActive: true } }) : null
+      session.user.id = user?.isActive ? user.id : ""
       return session
     },
   },

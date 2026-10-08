@@ -15,6 +15,6 @@ export async function authorizeCredentials(credentials: Partial<Record<string, u
 
   const user = await prisma.user.findUnique({ where: { email } })
   const matches = await bcrypt.compare(password, user?.passwordHash ?? dummyHash)
-  if (!user || !matches) return null
+  if (!user?.isActive || !matches) return null
   return { id: user.id, email: user.email, name: user.name }
 }

@@ -1,0 +1,149 @@
+{
+  "courseSlug": "real-world-auth",
+  "assignments": [
+    {
+      "order": 1,
+      "moduleOrder": 3,
+      "title": "Registro y contraseñas",
+      "instructions": "Implementá el registro de usuarios de la aplicación. Entregá el repositorio y el commit completo. Incluí cómo instalar y ejecutar la solución, evidencias de los casos válidos y de error, y una explicación del almacenamiento de contraseñas y de las validaciones elegidas.",
+      "version": 1,
+      "required": true,
+      "criteria": [
+        {
+          "id": "registration",
+          "label": "Registro válido",
+          "expected": "Ejecutar un registro con datos válidos: se crea una cuenta y se informa el resultado.",
+          "required": true
+        },
+        {
+          "id": "validation",
+          "label": "Validaciones del servidor",
+          "expected": "Enviar campos vacíos, email inválido y contraseña insuficiente directamente al servidor: se rechazan sin crear cuentas.",
+          "required": true
+        },
+        {
+          "id": "duplicates",
+          "label": "Cuentas duplicadas",
+          "expected": "Repetir un email, incluso en solicitudes concurrentes: existe una sola cuenta y el error es controlado.",
+          "required": true
+        },
+        {
+          "id": "hashing",
+          "label": "Hash de contraseñas",
+          "expected": "Inspeccionar código y persistencia: se usa un hash adaptativo y no se guarda la contraseña en texto plano.",
+          "required": true
+        },
+        {
+          "id": "responses",
+          "label": "Respuestas sin secretos",
+          "expected": "Inspeccionar respuestas y logs: no incluyen contraseñas ni hashes.",
+          "required": true
+        },
+        {
+          "id": "tests",
+          "label": "Pruebas y decisiones",
+          "expected": "Las pruebas verifican los casos anteriores y el README justifica las decisiones de validación y hashing.",
+          "required": true
+        }
+      ]
+    },
+    {
+      "order": 2,
+      "moduleOrder": 5,
+      "title": "Login y sesiones",
+      "instructions": "Extendé la misma aplicación con login, persistencia de sesión, vencimiento y logout. Enviá un nuevo commit, instrucciones de ejecución, evidencias y decisiones. La entrega anterior debe estar aprobada.",
+      "version": 1,
+      "required": true,
+      "criteria": [
+        {
+          "id": "valid-login",
+          "label": "Credenciales válidas",
+          "expected": "Iniciar sesión con una cuenta registrada: se obtiene una sesión utilizable.",
+          "required": true
+        },
+        {
+          "id": "invalid-login",
+          "label": "Errores genéricos",
+          "expected": "Probar email inexistente y contraseña incorrecta: ambos producen un mensaje genérico sin revelar la existencia de la cuenta.",
+          "required": true
+        },
+        {
+          "id": "persistence",
+          "label": "Persistencia de sesión",
+          "expected": "Navegar y recargar: la sesión se mantiene según la estrategia documentada.",
+          "required": true
+        },
+        {
+          "id": "expiration",
+          "label": "Vencimiento e integridad",
+          "expected": "Probar sesión vencida y manipulada: ambas se rechazan.",
+          "required": true
+        },
+        {
+          "id": "logout",
+          "label": "Cierre de sesión",
+          "expected": "Cerrar sesión y volver a solicitar un recurso privado desde ese navegador: el acceso se rechaza.",
+          "required": true
+        },
+        {
+          "id": "throttling",
+          "label": "Límite de intentos",
+          "expected": "Repetir intentos de ingreso: se aplica un límite verificable y se documenta su ventana.",
+          "required": true
+        },
+        {
+          "id": "tests",
+          "label": "Pruebas y documentación",
+          "expected": "Las pruebas cubren casos de éxito y error y el README explica el diseño de las sesiones.",
+          "required": true
+        }
+      ]
+    },
+    {
+      "order": 3,
+      "moduleOrder": 7,
+      "title": "Autorización e integración final",
+      "instructions": "Completá la aplicación con recursos privados, permisos de usuario y administrador y pruebas del recorrido completo. Entregá un commit nuevo, evidencias y un README que permita verificar la solución desde una instalación limpia. Las entregas anteriores deben estar aprobadas.",
+      "version": 1,
+      "required": true,
+      "criteria": [
+        {
+          "id": "private-resources",
+          "label": "Recursos privados",
+          "expected": "Solicitar páginas y operaciones privadas sin sesión: el servidor rechaza el acceso.",
+          "required": true
+        },
+        {
+          "id": "ownership",
+          "label": "Propiedad de recursos",
+          "expected": "Con una cuenta, solicitar recursos de otra: el servidor rechaza el acceso.",
+          "required": true
+        },
+        {
+          "id": "admin-role",
+          "label": "Permisos administrativos",
+          "expected": "Una cuenta común no puede ejecutar operaciones administrativas; una cuenta con permiso sí.",
+          "required": true
+        },
+        {
+          "id": "tampering",
+          "label": "Manipulación del cliente",
+          "expected": "Modificar roles o identificadores enviados desde el navegador no concede permisos adicionales.",
+          "required": true
+        },
+        {
+          "id": "end-to-end",
+          "label": "Flujo completo",
+          "expected": "Verificar registro, login, acceso autorizado, rechazo de accesos indebidos y logout mediante pruebas reproducibles.",
+          "required": true
+        },
+        {
+          "id": "readme",
+          "label": "Instalación y decisiones",
+          "expected": "Seguir el README desde una instalación limpia permite configurar, ejecutar y comprobar la solución y sus decisiones.",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

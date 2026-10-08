@@ -11,7 +11,7 @@ siguen a este plan describen el MVP anterior y no acreditan un release validado.
 | 1. Alcance                               | Curso piloto, español, stack, entregas, roles, evaluación y certificado                                                 | Definido              |
 | 2. Entorno                               | Certificados de descarga de Prisma, cliente generado, variables, base local, migraciones y seed                         | Verificado localmente |
 | 3. Acceso y autenticación                | Publicación efectiva, validación del servidor, callback de login, normalización de email y límites de intentos          | Verificado localmente |
-| 4. Diseño e implementación de evaluación | Roles y permisos, entregas versionadas, revisión por criterios, historial y paneles de alumno, profesor y administrador | Pendiente             |
+| 4. Diseño e implementación de evaluación | Roles y permisos, entregas versionadas, revisión por criterios, historial y paneles de alumno, profesor y administrador | Verificado localmente |
 | 5. Curso piloto                          | Adaptación al español, siete lecciones, repositorio base, tres consignas con rúbricas comprobables y recursos           | Pendiente             |
 | 6. Certificados y experiencia            | Requisitos de aprobación, PDF y verificación, estados de interfaz, accesibilidad y revisión móvil                       | Pendiente             |
 | 7. Calidad y entrega                     | Corregir lint y E2E, comprobar typecheck, unitarios y build, CI y validación del flujo completo desplegado              | Pendiente             |
@@ -45,6 +45,24 @@ La traducción y la publicación exclusiva del curso piloto pertenecen a la fase
 - Lint y build de producción con chequeo de tipos aprobados.
 - Workflow E2E configurado para ejecutar las pruebas de integración en su base de prueba; CI remoto y recorrido completo de interfaz aún pendientes.
 - Políticas y operación documentadas en [access-auth.md](access-auth.md).
+
+### Evidencia de la Fase 4
+
+- Migración aditiva de roles, cuentas activas, profesores asignados, entregas, versiones, intentos, invitaciones y auditoría. Las cuentas existentes conservan sus datos y reciben rol alumno.
+- Paneles de alumno, profesor y administrador con permisos consultados en el servidor y estados de carga, vacío y error.
+- Tres entregas del piloto vinculadas a los módulos 3, 5 y 7; consignas y criterios en español, seed idempotente y versiones anteriores conservadas.
+- Corrección manual por criterio, reserva exclusiva de revisión, historial, reenvíos con un commit diferente y desbloqueo secuencial tras aprobar.
+- Desactivar profesores o retirar permisos libera revisiones activas; se impide corregir trabajos propios y quitar al último administrador activo.
+- Invitaciones de un solo uso, ligadas al email, con token almacenado como hash, vencimiento de siete días y revocación. El enlace se comparte manualmente.
+- Comando de alta inicial del administrador aplicado a una cuenta registrada en el entorno local.
+- 90 pruebas unitarias y 14 de integración con PostgreSQL aprobadas. La integración usa una base temporal aislada y la elimina al terminar.
+- Dos E2E locales aprobados sobre el build de producción: entrega, devolución, reenvío y aprobación; invitación, aceptación y retiro de permisos.
+- Lint, TypeScript y build de producción aprobados. La CI incluye seed de entregas y pruebas de integración; no se ejecutó CI remoto ni la suite E2E histórica completa.
+- Modelo, permisos y operación documentados en [evaluation-model.md](evaluation-model.md).
+
+Las lecciones completas en español, el repositorio base y los recursos corresponden
+a la Fase 5. El certificado y la separación final entre lectura completada y curso
+aprobado corresponden a la Fase 6.
 
 ## Roadmap histórico
 

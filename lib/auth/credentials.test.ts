@@ -12,7 +12,7 @@ describe("credentials provider", () => {
     vi.resetAllMocks()
     mocks.consume.mockResolvedValue(true)
     mocks.compare.mockResolvedValue(true)
-    mocks.find.mockResolvedValue({ id: "u1", name: "Emi", email: "emi@example.com", passwordHash: "real-hash" })
+    mocks.find.mockResolvedValue({ id: "u1", name: "Emi", email: "emi@example.com", passwordHash: "real-hash", isActive: true })
   })
   it("normalizes credentials even for direct Auth.js requests", async () => {
     expect(await authorizeCredentials({ email: " EMI@Example.COM ", password: "password123" })).toEqual({ id: "u1", name: "Emi", email: "emi@example.com" })
@@ -38,6 +38,10 @@ describe("credentials provider", () => {
   it("rejects incorrect passwords", async () => {
     mocks.compare.mockResolvedValue(false)
     expect(await authorizeCredentials({ email: "emi@example.com", password: "wrong" })).toBeNull()
+  })
+  it("rejects inactive accounts even with a correct password", async () => {
+    mocks.find.mockResolvedValue({ id: "u1", passwordHash: "real-hash", isActive: false })
+    expect(await authorizeCredentials({ email: "emi@example.com", password: "password123" })).toBeNull()
   })
   it("rejects untrusted value types", async () => {
     expect(await authorizeCredentials({ email: ["emi@example.com"], password: {} })).toBeNull()

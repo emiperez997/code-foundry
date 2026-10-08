@@ -82,6 +82,10 @@ async function main() {
     if (orphans.length > 0) {
       const orphanIds = orphans.map((o: { id: string }) => o.id);
 
+      if (await prisma.assignment.count({ where: { moduleId: { in: orphanIds } } })) {
+        throw new Error(`[${course.slug}] No se pueden eliminar módulos con entregas versionadas. Conservá el módulo o despublicá el curso.`);
+      }
+
       await prisma.progress.deleteMany({
         where: { moduleId: { in: orphanIds } },
       });

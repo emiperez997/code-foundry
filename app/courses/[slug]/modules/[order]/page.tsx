@@ -41,12 +41,15 @@ export default async function ModulePage({ params }: Props) {
 
   const course = await prisma.course.findUnique({
     where: { slug, isPublished: true },
-    include: { modules: { orderBy: { order: "asc" } } },
+    include: { modules: { orderBy: { order: "asc" }, include: { assignment: { select: { id: true, title: true } } } } },
   });
   if (!course) notFound();
 
   const mod = course.modules.find((m) => m.order === orderNum);
   if (!mod) notFound();
+
+  const canSubmit = mod.assignment ? (await prisma.user.findUnique({ where: { id: userId }, select: { roles: true } }))?.roles.includes("STUDENT") : false;
+  const enrolled = canSubmit && await prisma.enrollment.findUnique({ where: { userId_courseId: { userId, courseId: course.id } } });
 
   const progress = userId
     ? await prisma.progress.findUnique({
@@ -100,6 +103,8 @@ export default async function ModulePage({ params }: Props) {
       </div>
 
       <Separator className="my-8" />
+
+      {mod.assignment && canSubmit && <div className="mb-8"><Button variant="outline" asChild><Link href={enrolled ? `/assignments/${mod.assignment.id}` : `/courses/${slug}`}>{enrolled ? `Ver entrega: ${mod.assignment.title}` : "Inscribirme para entregar"}</Link></Button><p className="mt-2 text-sm text-muted-foreground">La aprobación de esta entrega es independiente del avance de lectura.</p></div>}
 
       <div
         className={`mb-8 flex items-center justify-between rounded-lg border p-4 ${

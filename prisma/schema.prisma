@@ -7,6 +7,19 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  IN_REVIEW
+  APPROVED
+  CHANGES_REQUESTED
+}
+
 model AuthRateLimit {
   key       String   @id
   count     Int
@@ -22,8 +35,15 @@ model User {
   name         String
   passwordHash String
   createdAt    DateTime   @default(now())
+  isActive     Boolean    @default(true)
+  roles        Role[]     @default([STUDENT])
   enrollments  Enrollment[]
   progress     Progress[]
+  teaching     CourseTeacher[]
+  submissions  Submission[] @relation("StudentSubmissions")
+  reviews      Submission[] @relation("TeacherReviews")
+  invitations  TeacherInvitation[]
+  auditEvents  AuditEvent[]
 
   @@map("users")
 }
@@ -37,6 +57,8 @@ model Course {
   isPublished Boolean  @default(false)
   enrollments Enrollment[]
   modules     Module[]
+  teachers    CourseTeacher[]
+  assignments Assignment[]
 
   @@map("courses")
 }
@@ -49,9 +71,112 @@ model Module {
   description String
   course      Course     @relation(fields: [courseId], references: [id])
   progress    Progress[]
+  assignment  Assignment?
 
   @@unique([courseId, order])
   @@map("modules")
+}
+
+model CourseTeacher {
+  courseId  String
+  teacherId String
+  createdAt DateTime @default(now())
+  course    Course @relation(fields: [courseId], references: [id])
+  teacher   User @relation(fields: [teacherId], references: [id])
+
+  @@id([courseId, teacherId])
+  @@index([teacherId])
+  @@map("course_teachers")
+}
+
+model Assignment {
+  id             String @id @default(uuid())
+  courseId       String
+  moduleId       String @unique
+  order          Int
+  title          String
+  required       Boolean @default(true)
+  currentVersion Int @default(1)
+  course         Course @relation(fields: [courseId], references: [id])
+  module         Module @relation(fields: [moduleId], references: [id])
+  versions       AssignmentVersion[]
+  submissions    Submission[]
+
+  @@unique([courseId, order])
+  @@map("assignments")
+}
+
+model AssignmentVersion {
+  id           String @id @default(uuid())
+  assignmentId String
+  version      Int
+  instructions String
+  criteria     Json
+  createdAt    DateTime @default(now())
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+  submissions  Submission[]
+
+  @@unique([assignmentId, version])
+  @@unique([id, assignmentId])
+  @@map("assignment_versions")
+}
+
+model Submission {
+  id             String @id @default(uuid())
+  assignmentId   String
+  versionId      String
+  studentId      String
+  attempt        Int
+  status         SubmissionStatus @default(SUBMITTED)
+  repositoryUrl  String
+  commit         String
+  instructions   String
+  evidence       String
+  explanation    String
+  reviewerId     String?
+  claimedAt      DateTime?
+  reviewedAt     DateTime?
+  feedback       String?
+  results        Json?
+  createdAt      DateTime @default(now())
+  assignment     Assignment @relation(fields: [assignmentId], references: [id])
+  version        AssignmentVersion @relation(fields: [versionId, assignmentId], references: [id, assignmentId])
+  student        User @relation("StudentSubmissions", fields: [studentId], references: [id])
+  reviewer       User? @relation("TeacherReviews", fields: [reviewerId], references: [id])
+
+  @@unique([assignmentId, studentId, attempt])
+  @@index([studentId, createdAt])
+  @@index([reviewerId, status])
+  @@index([status, createdAt])
+  @@map("submissions")
+}
+
+model TeacherInvitation {
+  id          String @id @default(uuid())
+  email       String
+  tokenHash   String @unique
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime @default(now())
+  createdById String
+  createdBy   User @relation(fields: [createdById], references: [id])
+
+  @@index([email])
+  @@map("teacher_invitations")
+}
+
+model AuditEvent {
+  id         String @id @default(uuid())
+  actorId    String?
+  action     String
+  targetType String
+  targetId   String
+  details    Json
+  createdAt  DateTime @default(now())
+  actor      User? @relation(fields: [actorId], references: [id])
+
+  @@index([createdAt])
+  @@map("audit_events")
 }
 
 model Progress {

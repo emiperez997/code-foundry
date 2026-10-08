@@ -15,7 +15,7 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user
-      const isModuleRoute = nextUrl.pathname.includes("/modules/") || nextUrl.pathname === "/dashboard"
+      const isModuleRoute = nextUrl.pathname.includes("/modules/") || ["/dashboard", "/teacher", "/admin", "/assignments", "/invitations"].some((path) => nextUrl.pathname === path || nextUrl.pathname.startsWith(`${path}/`))
 
       if (isModuleRoute && !isLoggedIn) {
         const loginUrl = new URL("/login", nextUrl.origin)

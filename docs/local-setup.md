@@ -46,6 +46,7 @@ pnpm db:generate
 pnpm db:migrate
 pnpm db:status
 pnpm db:seed
+pnpm db:seed-assessments
 pnpm db:check
 ```
 
@@ -56,6 +57,19 @@ contenido, elimina también su progreso. Sobre una base con datos existentes,
 ejecutá `pnpm db:check` antes del seed para revisar módulos y progreso afectados.
 `db:check` solo lee la base y compara los órdenes de módulos con el contenido;
 no sustituye la revisión del texto ni de la publicación de cursos.
+
+El seed de cursos impide eliminar módulos con entregas asociadas. El seed de
+entregas conserva las versiones anteriores; cambiar consignas o rúbricas exige
+incrementar su versión.
+
+Para habilitar el primer administrador, registrá una cuenta y ejecutá:
+
+```powershell
+pnpm admin:bootstrap --email tu-email-registrado@example.com
+```
+
+Los roles, paneles, invitaciones y la operación de evaluación se documentan en
+[evaluation-model.md](evaluation-model.md).
 
 ## Certificados de Windows y Prisma
 
@@ -78,6 +92,7 @@ revisá los certificados confiables de la red con quien administra el entorno.
 pnpm lint
 pnpm typecheck
 pnpm test
+pnpm test:db
 pnpm build
 pnpm start
 ```
@@ -85,6 +100,10 @@ pnpm start
 Para desarrollo, usá `pnpm dev`. Los scripts `predev` y `prebuild` validan el
 entorno y generan Prisma antes de arrancar o compilar; `prestart` valida el entorno.
 Los comandos directos de Next.js no ejecutan esas comprobaciones.
+
+`test:db` requiere permisos de creación de bases de PostgreSQL: usa una base
+temporal aislada y la elimina al finalizar. El E2E específico de evaluación se
+ejecuta con `pnpm exec playwright test e2e/evaluation.spec.ts`.
 
 La política de acceso, los límites persistentes de autenticación y su mantenimiento
 se documentan en [access-auth.md](access-auth.md).

@@ -48,9 +48,15 @@ elimina esos módulos y su progreso; revisar primero el impacto en la base desti
 ```bash
 pnpm db:check
 pnpm db:seed
+pnpm db:seed-assessments
 ```
 
 Criterio: todos los slugs de cursos aparecen en la salida como `✓ <slug> — N module(s) synced`.
+
+Las tres entregas versionadas del piloto deben sincronizarse sin sobrescribir
+consignas previas. El seed impide eliminar módulos con entregas asociadas.
+Habilitar una cuenta registrada con `pnpm admin:bootstrap --email EMAIL` y
+comprobar acceso a `/admin`; ver [evaluation-model.md](evaluation-model.md).
 
 ---
 
@@ -68,6 +74,7 @@ Criterio: sin errores de TypeScript.
 
 ```bash
 pnpm test
+pnpm test:db
 ```
 
 Criterio: todos los tests en verde.
@@ -97,6 +104,14 @@ Con el servidor de producción levantado (`pnpm start`), verificar el flujo crí
 - [ ] Marcar módulo como completado actualiza el estado en la UI
 - [ ] `/dashboard` muestra el curso en "En progreso" con el porcentaje correcto
 - [ ] Al completar todos los módulos, el curso aparece en "Completados"
+- [ ] El alumno envía un intento y ve únicamente su propio historial
+- [ ] Un profesor asignado toma la entrega y devuelve cambios por criterio
+- [ ] El alumno reenvía un nuevo commit; el profesor aprueba al cumplir los criterios
+- [ ] El administrador gestiona roles y asignaciones; retirar permisos libera revisiones activas
+- [ ] Una invitación puede aceptarse solo una vez y con el email indicado
+
+El estado de lectura completada aún no representa la aprobación con certificado:
+esa separación se implementa en la Fase 6.
 
 ---
 
