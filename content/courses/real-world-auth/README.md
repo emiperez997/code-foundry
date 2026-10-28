@@ -1,64 +1,65 @@
-# Real-World Authentication System
+# Sistema de autenticación para una aplicación real
 
 ## Slug
 real-world-auth
 
 ## Summary
-A junior developer joins a small startup and gets their first real task: add a login system to the app. What seems like a straightforward feature turns into a series of decisions — how to store passwords safely, how to keep users logged in, how to protect certain pages, and how to handle roles. This course simulates that journey from zero, making each decision explicit.
+Una desarrolladora junior entra a una startup pequeña y recibe su primera tarea real: añadir un sistema de acceso a la aplicación. Lo que parece una funcionalidad sencilla se convierte en una serie de decisiones: cómo guardar contraseñas de forma segura, cómo mantener a las personas con la sesión iniciada, cómo proteger ciertas páginas y cómo manejar roles. Este curso recorre ese camino desde cero y hace explícita cada decisión.
 
 ## Learning Goals
-- How to reason about security trade-offs without over-engineering
-- How to design a login flow that handles both happy and failure paths
-- How to decide where validation lives (client vs. server)
-- How to protect routes and resources based on identity and role
-- How to communicate clearly when authentication fails, without leaking information
+- Razonar sobre los compromisos de seguridad sin sobredimensionar la solución
+- Diseñar un flujo de login que cubra tanto el camino feliz como los errores
+- Decidir dónde vive la validación (cliente o servidor)
+- Proteger rutas y recursos según la identidad y el rol
+- Comunicar con claridad cuando falla la autenticación, sin filtrar información
 
 ## Target Level
-Junior / Mixed
+Junior / Mixto
 
 ## Published
 true
 
 ## Prerequisites
-- Basic understanding of how HTTP requests and responses work
-- Has built at least a simple app with a backend, even if small
+- Conocimientos básicos de cómo funcionan las solicitudes y respuestas HTTP
+- Haber construido al menos una aplicación sencilla con backend, aunque sea pequeña
+- Conocimientos básicos de Next.js, TypeScript y PostgreSQL
 
 ## Real-World Context
-A small startup has a working app but no real login system — users are identified by an ID stored in localStorage. The CTO asks a junior dev to build authentication from scratch. The team is small, the timeline is tight, and every decision will have consequences they'll live with.
+Una startup pequeña tiene una aplicación que funciona, pero no tiene un sistema de acceso real: a los usuarios se los identifica con un ID guardado en localStorage. El CTO te pide que construyas la autenticación desde cero. El equipo es pequeño, el plazo es corto y cada decisión tendrá consecuencias con las que tendrás que convivir.
 
 ## Modules
-1. What Is Authentication and Why Is It Hard?
-   - The app currently trusts whatever the client sends
-   - Student reasons about what "being logged in" means from the server's perspective
+1. Entender el problema
+   - La aplicación confía hoy en lo que envía el cliente
+   - Razonas sobre qué significa "haber iniciado sesión" desde el punto de vista del servidor
 
-2. User Registration
-   - Building the signup form and the endpoint behind it
-   - Student decides what to validate, what to store, and what to tell the user when something fails
+2. Registro de usuarios
+   - Construyes el formulario de alta y el endpoint que lo recibe
+   - Decides qué validar, qué guardar y qué decirle a la persona cuando algo falla
 
-3. Passwords: How Not to Get It Wrong
-   - Plaintext passwords were found in the database
-   - Student reasons about why hashing exists and what makes a hashing strategy safe
+3. Almacenamiento de contraseñas
+   - Se encontraron contraseñas en texto plano en la base de datos
+   - Razonas por qué existe el hashing y qué hace seguro a un algoritmo de hash
 
-4. Login and Identity Verification
-   - Matching a submitted password against a stored hash
-   - Student decides what error messages are safe to show and what information they reveal
+4. Login y verificación de identidad
+   - Comparas la contraseña enviada con el hash almacenado
+   - Decides qué mensajes de error son seguros y qué información revelan
 
-5. Sessions: Keeping the User Logged In
-   - The server can't remember state between requests
-   - Student reasons about how tokens work, what they should contain, and how long they should last
+5. Sesiones y logout
+   - El servidor no recuerda el estado entre solicitudes
+   - Razonas cómo funcionan las sesiones, qué deben contener, cuánto deben durar y cómo se cierran
 
-6. Route Protection
-   - A QA tester accessed the admin panel just by knowing the URL
-   - Student decides what must be enforced on the server vs. the client, and why client-only protection isn't enough
+6. Protección de recursos
+   - Una persona de QA entró al panel de administración solo con conocer la URL
+   - Decides qué debe verificarse en el servidor y por qué la protección solo en el cliente no basta
 
-7. Basic Roles: Admin vs. User
-   - The team needs two types of users with different permissions
-   - Student reasons about where to store roles, how to enforce them per endpoint, and what happens when a role changes mid-session
+7. Roles y permisos
+   - El equipo necesita dos tipos de usuario con permisos distintos
+   - Razonas dónde guardar los roles, cómo exigirlos en cada endpoint y qué ocurre cuando un rol cambia con la sesión abierta
 
 ## Outcomes
-After finishing this course, the student should be able to:
-- Build a complete login and registration flow with secure password handling
-- Issue and verify session tokens with appropriate expiration
-- Protect routes on both the frontend and the backend
-- Implement a simple role system that restricts access per endpoint
-- Make informed decisions about what to expose (and what not to expose) in error messages
+Al terminar este curso podrás:
+- Construir un flujo completo de registro y login con manejo seguro de contraseñas
+- Emitir y verificar sesiones con un vencimiento apropiado
+- Proteger recursos en el servidor y reflejarlo en la interfaz
+- Implementar un sistema sencillo de roles que restrinja el acceso por endpoint
+- Decidir con criterio qué información exponer (y cuál no) en los mensajes de error

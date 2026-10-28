@@ -29,7 +29,6 @@ function SubmitButton({ isCompleted }: { isCompleted: boolean }) {
         variant="outline"
         size="sm"
         disabled={pending}
-        aria-label="Marcar modulo como pendiente"
       >
         {pending ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -46,7 +45,6 @@ function SubmitButton({ isCompleted }: { isCompleted: boolean }) {
       type="submit"
       size="sm"
       disabled={pending}
-      aria-label="Marcar modulo como completado"
     >
       {pending ? (
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />

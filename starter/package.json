@@ -1,0 +1,30 @@
+{
+  "name": "auth-course-starter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Base del curso 'Sistema de autenticación para una aplicación real' (CodeFoundry)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "db:up": "docker compose up -d --wait",
+    "db:init": "tsx scripts/init-db.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "next": "16.2.3",
+    "pg": "^8.20.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tsx": "^4.21.0",
+    "typescript": "^5",
+    "vitest": "^4.1.7"
+  }
+}

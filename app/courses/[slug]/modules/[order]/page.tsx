@@ -8,7 +8,21 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { getCourseStatus } from "@/lib/certificates/status";
+import { CourseStatus } from "@/components/course-status";
 import { ModuleProgressForm } from "@/components/module-progress-form";
+import { LessonContent } from "@/components/lesson-content";
+import { getLesson } from "@/lib/courses/lessonCache";
+
+function loadLessonSafely(slug: string, order: number) {
+  try {
+    return getLesson(slug, order);
+  } catch (error) {
+    // Invalid lessons are caught by the seed/CI validation; never break the page.
+    console.error(`[module page] Lección inválida para ${slug}/${order}`, error);
+    return null;
+  }
+}
 
 type Props = { params: Promise<{ slug: string; order: string }> };
 
@@ -58,6 +72,12 @@ export default async function ModulePage({ params }: Props) {
     : null;
   const isCompleted = !!progress;
 
+  const isEnrolledInCourse = !!(await prisma.enrollment.findUnique({ where: { userId_courseId: { userId, courseId: course.id } }, select: { id: true } }));
+  const courseStatus = isEnrolledInCourse ? await getCourseStatus(userId, course.id) : null;
+
+  const lesson = loadLessonSafely(slug, orderNum);
+  if (!lesson) console.warn(`[module page] ${slug}/${orderNum} no tiene lección; se muestra el contexto del módulo.`);
+
   const totalModules = course.modules.length;
   const prevModule = course.modules.find((m) => m.order === orderNum - 1);
   const nextModule = course.modules.find((m) => m.order === orderNum + 1);
@@ -88,7 +108,9 @@ export default async function ModulePage({ params }: Props) {
       <Separator className="mb-8" />
 
       {/* Module content */}
-      <div className="prose prose-neutral max-w-none">
+      {lesson ? (
+        <LessonContent markdown={lesson.body} />
+      ) : (
         <div className="rounded-lg border bg-muted/30 p-6">
           <div className="flex items-start gap-3">
             <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
@@ -100,23 +122,23 @@ export default async function ModulePage({ params }: Props) {
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <Separator className="my-8" />
 
       {mod.assignment && canSubmit && <div className="mb-8"><Button variant="outline" asChild><Link href={enrolled ? `/assignments/${mod.assignment.id}` : `/courses/${slug}`}>{enrolled ? `Ver entrega: ${mod.assignment.title}` : "Inscribirme para entregar"}</Link></Button><p className="mt-2 text-sm text-muted-foreground">La aprobación de esta entrega es independiente del avance de lectura.</p></div>}
 
       <div
-        className={`mb-8 flex items-center justify-between rounded-lg border p-4 ${
+        className={`mb-8 flex flex-col gap-3 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between ${
           isCompleted ? "border-emerald-200 bg-emerald-50" : "bg-muted/30"
         }`}
       >
         <div>
-          <p className="text-sm font-medium">Estado del módulo</p>
-          <p className="text-xs text-muted-foreground">
+          <h2 className="text-sm font-medium">Lectura de este módulo</h2>
+          <p className="text-sm text-muted-foreground" aria-live="polite">
             {isCompleted
-              ? "Completado. Puedes marcarlo pendiente si quieres repasarlo."
-              : "Cuando lo termines, marca este módulo como completado."}
+              ? "Lectura completada. Puedes marcarlo pendiente si quieres repasarlo."
+              : "Cuando lo termines, marca este módulo como leído."}
           </p>
         </div>
 
@@ -128,11 +150,13 @@ export default async function ModulePage({ params }: Props) {
         />
       </div>
 
+      {courseStatus ? <div className="mb-8"><CourseStatus status={courseStatus} courseSlug={slug} /></div> : null}
+
       {/* Navigation */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           {prevModule ? (
-            <Button variant="outline" size="sm" asChild>
+            <Button variant="outline" size="sm" className="min-h-11" asChild>
               <Link href={`/courses/${slug}/modules/${prevModule.order}`}>
                 <ArrowLeft className="mr-1 h-3.5 w-3.5" />
                 Módulo anterior
@@ -154,7 +178,7 @@ export default async function ModulePage({ params }: Props) {
 
         <div>
           {nextModule ? (
-            <Button size="sm" asChild>
+            <Button size="sm" className="min-h-11" asChild>
               <Link href={`/courses/${slug}/modules/${nextModule.order}`}>
                 Siguiente módulo
                 <ArrowRight className="ml-1 h-3.5 w-3.5" />
@@ -173,14 +197,15 @@ export default async function ModulePage({ params }: Props) {
 
       {/* Module index sidebar hint */}
       <div className="mt-10">
-        <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <h2 className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Módulos del curso
-        </p>
+        </h2>
         <ol className="flex flex-col gap-1">
           {course.modules.map((m) => (
             <li key={m.id}>
               <Link
                 href={`/courses/${slug}/modules/${m.order}`}
+                aria-current={m.order === orderNum ? "page" : undefined}
                 className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-muted ${
                   m.order === orderNum
                     ? "bg-muted font-medium"

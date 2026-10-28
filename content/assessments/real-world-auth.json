@@ -5,8 +5,8 @@
       "order": 1,
       "moduleOrder": 3,
       "title": "Registro y contraseñas",
-      "instructions": "Implementá el registro de usuarios de la aplicación. Entregá el repositorio y el commit completo. Incluí cómo instalar y ejecutar la solución, evidencias de los casos válidos y de error, y una explicación del almacenamiento de contraseñas y de las validaciones elegidas.",
-      "version": 1,
+      "instructions": "Implementa el registro de usuarios de la aplicación. Entrega el repositorio y el commit completo. Incluye cómo instalar y ejecutar la solución, evidencias de los casos válidos y de error, y una explicación del almacenamiento de contraseñas y de las validaciones elegidas.",
+      "version": 2,
       "required": true,
       "criteria": [
         {
@@ -51,8 +51,8 @@
       "order": 2,
       "moduleOrder": 5,
       "title": "Login y sesiones",
-      "instructions": "Extendé la misma aplicación con login, persistencia de sesión, vencimiento y logout. Enviá un nuevo commit, instrucciones de ejecución, evidencias y decisiones. La entrega anterior debe estar aprobada.",
-      "version": 1,
+      "instructions": "Extiende la misma aplicación con login, persistencia de sesión, vencimiento y logout. Envía un nuevo commit, instrucciones de ejecución, evidencias y decisiones. La entrega anterior debe estar aprobada.",
+      "version": 2,
       "required": true,
       "criteria": [
         {
@@ -103,8 +103,8 @@
       "order": 3,
       "moduleOrder": 7,
       "title": "Autorización e integración final",
-      "instructions": "Completá la aplicación con recursos privados, permisos de usuario y administrador y pruebas del recorrido completo. Entregá un commit nuevo, evidencias y un README que permita verificar la solución desde una instalación limpia. Las entregas anteriores deben estar aprobadas.",
-      "version": 1,
+      "instructions": "Completa la aplicación con recursos privados, permisos de usuario y administrador y pruebas del recorrido completo. Entrega un commit nuevo, evidencias y un README que permita verificar la solución desde una instalación limpia. Las entregas anteriores deben estar aprobadas.",
+      "version": 2,
       "required": true,
       "criteria": [
         {

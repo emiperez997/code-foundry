@@ -47,6 +47,19 @@ Represents a user's advancement through a course, tracked at the module level.
 Represents a user's enrollment in a course. It is used for tracking and UX
 flows (e.g. dashboard and start/continue CTAs), not billing.
 
+### Evaluation and access entities
+
+Besides the entities above, the schema includes:
+
+- **Role** (enum): `STUDENT`, `TEACHER`, `ADMIN`; stored in `User.roles`.
+- **Assignment** / **AssignmentVersion**: versioned deliverables per module.
+- **Submission**: a student's attempt, reviewed by a teacher.
+- **TeacherInvitation**: single-use invitation (hashed token) created by an admin.
+- **AuditEvent**: audit trail of sensitive actions.
+- **AuthRateLimit**: persisted rate-limit windows for auth endpoints.
+
+Emails are stored lowercased. - **Certificate**: one per `(userId, courseId)`, issued when reading is complete and every required assignment is approved. Stores a snapshot of `recipientName` and `courseTitle`, a unique public `code` (`CF-XXXX-XXXX-XXXX-XXXX`) and a nullable `revokedAt` (revocation via `pnpm certificate:revoke`). Public verification exposes only name, course, date, issuer and status.
+
 ---
 
 ## Entity Details
@@ -123,8 +136,25 @@ The following concepts are intentionally excluded:
 |---------------------------|---------------------------------------------------------|
 | Payments                  | All content is free for registered users in the MVP     |
 | Subscription / paid access| Access is open and free in MVP; monetization is post-MVP|
-| Roles and permissions     | No admin workflows required yet                         |
-| Certificates              | Out of scope for this phase                             |
+| Admin UI beyond roles     | Roles exist (see Evaluation Entities); no broader admin tooling |
+| Certificate admin UI / QR | Revocation is script-only; no QR in the PDF            |
 | Comments or reviews       | Out of scope for this phase                             |
 | Content authoring         | Courses are defined in markdown files, not the database |
 | Course prerequisites      | Defined as text in course files, not enforced by the DB |
+
+---
+
+## Certificate
+
+| Field         | Type      | Notes                                              |
+|---------------|-----------|----------------------------------------------------|
+| id            | UUID      | Primary key                                        |
+| code          | string    | UNIQUE public verification code                    |
+| userId        | UUID      | FK to User                                         |
+| courseId      | UUID      | FK to Course                                       |
+| recipientName | string    | Name snapshot at issuance                          |
+| courseTitle   | string    | Title snapshot at issuance                         |
+| issuedAt      | timestamp | Issuance date                                      |
+| revokedAt     | timestamp | Nullable; set when revoked                         |
+
+`(userId, courseId)` is UNIQUE, which makes issuance idempotent under concurrency.

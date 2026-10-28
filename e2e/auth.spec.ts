@@ -5,6 +5,7 @@
  */
 
 import { test, expect } from "@playwright/test"
+import { cleanupTestUsers } from "./helpers/cleanup"
 import { createTestUser, registerUser, loginUser, registerAndLogin } from "./helpers/auth"
 
 test.describe("Authentication", () => {
@@ -12,6 +13,10 @@ test.describe("Authentication", () => {
 
   test.beforeEach(() => {
     user = createTestUser()
+  })
+
+  test.afterAll(() => {
+    cleanupTestUsers()
   })
 
   test("user can register and is redirected to login", async ({ page }) => {

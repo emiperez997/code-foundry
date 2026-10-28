@@ -17,7 +17,7 @@ A developer needs to design the database for a project management app from scrat
 Junior / Mixed
 
 ## Published
-true
+false
 
 ## Prerequisites
 - Has written basic SQL queries (SELECT, INSERT, WHERE)

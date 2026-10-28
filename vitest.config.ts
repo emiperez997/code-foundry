@@ -6,7 +6,7 @@ export default defineConfig({
     environment: "node",
     clearMocks: true,
     include: ["lib/**/*.test.ts"],
-    exclude: ["e2e/**", "node_modules/**", ".agents/**"],
+    exclude: ["e2e/**", "node_modules/**", ".agents/**", "starter/**"],
   },
   resolve: {
     alias: {

@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   ci:
     name: Typecheck · Test · Build
@@ -31,6 +34,9 @@ jobs:
         run: pnpm exec prisma generate
         env:
           DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
+
+      - name: Lint
+        run: pnpm lint
 
       - name: Typecheck Workspace
         run: pnpm typecheck

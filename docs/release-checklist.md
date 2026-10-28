@@ -5,6 +5,9 @@ Ejecutar en orden. Cada paso tiene un comando o criterio de aceptación claro.
 
 ---
 
+> **Proxy de producción:** debe sobrescribir `x-forwarded-for` con la IP real del cliente
+> (ver [access-auth.md](access-auth.md)). El limitador de `/verify/[code]` falla abierto por diseño.
+
 ## 1. Variables de entorno
 
 Verificar que todas las variables requeridas estén configuradas en el entorno destino.
@@ -36,6 +39,11 @@ pnpm db:migrate
 ```
 
 Criterio: el comando termina sin errores y no reporta migraciones pendientes.
+
+La migración `20261028000000_normalize_emails` pasa a minúsculas `users.email` y
+`teacher_invitations.email`. Si dos usuarios existentes difieren solo por
+mayúsculas, falla con `RAISE EXCEPTION` sin modificar datos: resolver los
+duplicados manualmente y reintentar.
 
 ---
 

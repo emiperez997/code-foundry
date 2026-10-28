@@ -7,6 +7,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   e2e:
     name: End-to-end tests
@@ -29,7 +32,8 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://codefoundry:codefoundry@localhost:5432/codefoundry_test
-      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      # Valor desechable: la DB es efímera y aislada, no se usa ningún secreto real.
+      AUTH_SECRET: e2e-throwaway-auth-secret-not-for-production-0123456789
       AUTH_TRUST_HOST: "true"
 
     steps:

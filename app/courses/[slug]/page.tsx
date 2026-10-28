@@ -8,6 +8,8 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { getCourseStatus } from "@/lib/certificates/status";
+import { CourseStatus } from "@/components/course-status";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -51,6 +53,10 @@ export default async function CourseDetailPage({ params }: Props) {
   const isCourseCompleted =
     totalModules > 0 && completedModules === totalModules;
   const isEnrolled = course.enrollments.length > 0;
+  const status = userId && isEnrolled ? await getCourseStatus(userId, course.id) : null;
+  const certificate = status
+    ? await prisma.certificate.findUnique({ where: { userId_courseId: { userId: userId!, courseId: course.id } }, select: { id: true, revokedAt: true } })
+    : null;
   const nextModule =
     course.modules.find((module) => module.progress.length === 0) ??
     course.modules[0];
@@ -67,19 +73,19 @@ export default async function CourseDetailPage({ params }: Props) {
 
       {/* Course header */}
       <div className="mb-8">
-        <div className="mb-3 flex items-center gap-2">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
           <Badge variant="secondary">{course.level}</Badge>
           <span className="text-sm text-muted-foreground">
             {totalModules} módulos
           </span>
-          {userId ? (
-            <span className="text-sm text-muted-foreground">
-              {completedModules}/{totalModules} completados
-            </span>
-          ) : null}
         </div>
         <h1 className="text-3xl font-bold tracking-tight">{course.title}</h1>
         <p className="mt-3 text-base text-muted-foreground">{course.summary}</p>
+        {status ? (
+          <div className="mt-5">
+            <CourseStatus status={status} courseSlug={course.slug} hasCertificate={!!certificate} certificateRevoked={!!certificate?.revokedAt} />
+          </div>
+        ) : null}
       </div>
 
       <Separator className="mb-8" />
@@ -87,7 +93,7 @@ export default async function CourseDetailPage({ params }: Props) {
       {/* Module list */}
       <div>
         <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
-          <BookOpen className="h-4 w-4" />
+          <BookOpen aria-hidden="true" className="h-4 w-4" />
           Módulos
         </h2>
 
@@ -105,7 +111,7 @@ export default async function CourseDetailPage({ params }: Props) {
                 >
                   {isCompleted ? (
                     <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white">
-                      <CheckCircle2 className="h-4 w-4" />
+                      <CheckCircle2 aria-hidden="true" className="h-4 w-4" />
                     </span>
                   ) : (
                     <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-medium text-muted-foreground group-hover:border-primary group-hover:text-primary">
@@ -118,9 +124,9 @@ export default async function CourseDetailPage({ params }: Props) {
                       {isCompleted ? (
                         <Badge
                           variant="outline"
-                          className="text-[10px] text-emerald-700"
+                          className="text-xs text-emerald-800"
                         >
-                          Completado
+                          Leído
                         </Badge>
                       ) : null}
                     </div>
@@ -144,21 +150,18 @@ export default async function CourseDetailPage({ params }: Props) {
           isEnrolled ? (
             <Button
               variant={isCourseCompleted ? "secondary" : "default"}
+              className="min-h-11"
               asChild
             >
               <Link
                 href={`/courses/${course.slug}/modules/${nextModule.order}`}
               >
                 {isCourseCompleted
-                  ? "Curso completado"
+                  ? "Repasar lectura"
                   : completedModules > 0
                     ? "Continuar curso"
                     : "Empezar curso"}
-                {isCourseCompleted ? (
-                  <CheckCircle2 className="ml-1 h-4 w-4" />
-                ) : (
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                )}
+                <ArrowRight aria-hidden="true" className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           ) : (

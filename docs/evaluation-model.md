@@ -2,7 +2,7 @@
 
 La Fase 4 implementa los roles, las entregas versionadas y la revisión manual del
 MVP acordado en [mvp-scope.md](mvp-scope.md). Las lecciones completas y los recursos
-se desarrollan en la Fase 5; los certificados, en la Fase 6.
+se desarrollan en la Fase 5; los certificados, en la Fase 6 (ver «Certificados» al final).
 
 ## Modelo
 
@@ -139,3 +139,20 @@ Playwright arranca la aplicación en el puerto 3100 y ajusta AUTH_URL para ese
 proceso. Podés cambiarlo con E2E_PORT; no reutiliza servidores existentes salvo
 que se indique E2E_REUSE_SERVER=1.
 El recorrido completo de los E2E anteriores y el CI remoto se revisan en la Fase 7.
+
+## Certificados (Fase 6)
+
+```mermaid
+erDiagram
+  User ||--o{ Certificate : recibe
+  Course ||--o{ Certificate : acredita
+```
+
+- **Lectura completada** (el alumno marca módulos) y **curso aprobado** (un profesor aprueba entregas) son estados distintos y se muestran por separado.
+- Un certificado se puede obtener solo si están completados todos los módulos y aprobada cada entrega con `required = true`. Un curso sin entregas obligatorias no emite certificado. Una entrega aprobada es definitiva (no hay más intentos tras aprobar).
+- La emisión es explícita ("Obtener certificado"), idempotente y segura ante concurrencia; guarda una copia del nombre y del título. Si luego cambian los requisitos o el progreso, el certificado emitido no se modifica.
+- **Elegibilidad:** al solicitarlo se cuentan *todos* los módulos del curso y *todas* las entregas obligatorias en ese momento. Los certificados ya emitidos siguen siendo válidos aunque luego se agreguen módulos o entregas obligatorias o cambie el progreso.
+- **Revocación:** un certificado revocado se muestra como "Certificado revocado" (texto + icono) en dashboard, curso y página del certificado, sin ofrecer descarga ni "obtener"; solicitar de nuevo un certificado revocado devuelve un error, no éxito. La ruta del PDF sigue sirviendo, solo al titular, un PDF sellado "CERTIFICADO REVOCADO".
+- Verificación pública en `/verify/[code]`: nombre, curso, fecha, emisor `CodeFoundry` y estado (válido/revocado); nunca email, entregas ni devoluciones. Limitada a 30 consultas/minuto por IP.
+- Operación: `pnpm certificate:revoke <código>` revoca un certificado y registra `certificate.revoked` en `AuditEvent`. Descarga del PDF solo para el titular.
+- Pruebas de integración: `lib/certificates/issue.integration.test.ts` (parte de `pnpm test:db`). E2E: `e2e/certificates.spec.ts`.

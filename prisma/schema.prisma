@@ -44,6 +44,7 @@ model User {
   reviews      Submission[] @relation("TeacherReviews")
   invitations  TeacherInvitation[]
   auditEvents  AuditEvent[]
+  certificates Certificate[]
 
   @@map("users")
 }
@@ -59,6 +60,7 @@ model Course {
   modules     Module[]
   teachers    CourseTeacher[]
   assignments Assignment[]
+  certificates Certificate[]
 
   @@map("courses")
 }
@@ -201,4 +203,21 @@ model Enrollment {
 
   @@unique([userId, courseId])
   @@map("enrollments")
+}
+
+model Certificate {
+  id            String    @id @default(uuid())
+  code          String    @unique
+  userId        String
+  courseId      String
+  recipientName String
+  courseTitle   String
+  issuedAt      DateTime  @default(now())
+  revokedAt     DateTime?
+  user          User      @relation(fields: [userId], references: [id])
+  course        Course    @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+  @@map("certificates")
 }

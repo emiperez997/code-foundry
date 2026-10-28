@@ -17,7 +17,7 @@ A developer built their first React app and it works — but the code is hard to
 Junior / Mixed
 
 ## Published
-true
+false
 
 ## Prerequisites
 - Can create React components and use useState

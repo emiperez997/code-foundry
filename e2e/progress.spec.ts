@@ -6,6 +6,7 @@
  */
 
 import { test, expect } from "@playwright/test"
+import { cleanupTestUsers } from "./helpers/cleanup"
 import { createTestUser, registerAndLogin } from "./helpers/auth"
 
 const COURSE_SLUG = "real-world-auth"
@@ -17,6 +18,10 @@ test.describe("Progress tracking (critical flow)", () => {
   test.beforeEach(async ({ page }) => {
     user = createTestUser()
     await registerAndLogin(page, user)
+  })
+
+  test.afterAll(() => {
+    cleanupTestUsers()
   })
 
   test("completing a module marks it as completed in the module list", async ({
@@ -65,7 +70,9 @@ test.describe("Progress tracking (critical flow)", () => {
     await expect(
       page.getByRole("heading", { name: "En progreso" }),
     ).toBeVisible()
-    await expect(page.getByText(new RegExp(COURSE_SLUG.replace(/-/g, "."), "i"))).toBeVisible()
+    await expect(
+      page.getByRole("heading", { level: 3, name: new RegExp(COURSE_SLUG.replace(/-/g, "."), "i") }),
+    ).toBeVisible()
   })
 
   test("progress persists after navigating away and back", async ({ page }) => {
@@ -105,11 +112,11 @@ test.describe("Progress tracking (critical flow)", () => {
     ).toBeVisible()
   })
 
-  test("dashboard shows Completados section", async ({ page }) => {
+  test("dashboard shows Aprobados section", async ({ page }) => {
     await page.goto("/dashboard")
 
     await expect(
-      page.getByRole("heading", { name: "Completados" }),
+      page.getByRole("heading", { name: "Aprobados" }),
     ).toBeVisible()
   })
 })

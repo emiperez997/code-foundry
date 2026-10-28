@@ -8,6 +8,7 @@
 import fs from "fs";
 import path from "path";
 import { parseCourse, type ParsedCourse } from "./courseParser";
+import { validateCourseLessons } from "./lessonLoader";
 
 // Resolved relative to the project root (where Next.js / Node runs from)
 const COURSES_DIR = path.join(process.cwd(), "content", "courses");
@@ -43,6 +44,14 @@ export function loadCourses(): ParsedCourse[] {
 
   return readmePaths.map((filePath) => {
     const markdown = fs.readFileSync(filePath, "utf-8");
-    return parseCourse(markdown, filePath);
+    const course = parseCourse(markdown, filePath);
+    // Lessons are read from the filesystem at runtime; validate them here so
+    // a malformed or missing lesson fails the seed (and CI) instead of a page.
+    validateCourseLessons(
+      course.slug,
+      course.modules.map((m) => m.order),
+      { requireAll: course.isPublished },
+    );
+    return course;
   });
 }

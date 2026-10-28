@@ -54,6 +54,14 @@ email contienen un hash SHA-256 y no el email en texto plano. No se confía en u
 header IP enviado por el cliente. Una política por IP requiere primero definir
 la infraestructura y qué proxy proporciona una IP confiable.
 
+**IP del cliente en `/verify/[code]`:** el límite por IP toma el primer valor de
+`x-forwarded-for` (o `x-real-ip`). En producción se requiere un proxy inverso de
+confianza que **sobrescriba** `x-forwarded-for` (no que añada al valor del cliente);
+si no, un cliente puede falsear la IP y evadir el límite. Sin ningún header, las
+solicitudes se agrupan en `unknown`. El limitador **falla abierto por diseño**: si la
+base de datos del limitador no responde, la verificación pública sigue funcionando
+(prioriza disponibilidad de un dato público y de bajo riesgo).
+
 Aplicar la migración antes de arrancar la aplicación actualizada:
 
 ```powershell

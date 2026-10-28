@@ -18,7 +18,7 @@ async function main() {
     url.pathname = `/${databaseName}`
     const env = { ...process.env, DATABASE_URL: url.href, RUN_DB_TESTS: "1" }
     execFileSync(process.execPath, [resolve("node_modules/prisma/build/index.js"), "migrate", "deploy"], { env, stdio: "inherit" })
-    execFileSync(process.execPath, [resolve("node_modules/vitest/vitest.mjs"), "run", "lib/auth/access.integration.test.ts", "lib/evaluation/workflow.integration.test.ts"], { env, stdio: "inherit" })
+    execFileSync(process.execPath, [resolve("node_modules/vitest/vitest.mjs"), "run", "lib/auth/access.integration.test.ts", "lib/evaluation/workflow.integration.test.ts", "lib/certificates/issue.integration.test.ts"], { env, stdio: "inherit" })
   } finally {
     try {
       if (created) await admin.query(`DROP DATABASE "${databaseName}" WITH (FORCE)`)

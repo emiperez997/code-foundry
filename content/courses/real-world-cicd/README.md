@@ -17,7 +17,7 @@ A three-person dev team deploys manually, has no shared process for reviewing co
 Junior / Mixed
 
 ## Published
-true
+false
 
 ## Prerequisites
 - Uses Git for version control (commit, push, pull)
